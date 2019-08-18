@@ -16,6 +16,10 @@
 
 rootProject.wrapper.gradleVersion = '5.6'
 
+allprojects {
+    buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
+}
+
 ext.customVersionPrefix = project.hasProperty('versionPrefix') ? project.getProperty('versionPrefix') : ''
 
 repositories {

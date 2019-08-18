@@ -16,8 +16,6 @@
 
 group 'org.vividus'
 
-project.buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
-
 def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
 project.version = new File(scmVersion.repository.directory, '.git').exists() ?
         customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
