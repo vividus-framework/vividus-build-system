@@ -17,3 +17,7 @@
 rootProject.wrapper.gradleVersion = '5.6'
 
 ext.customVersionPrefix = project.hasProperty('versionPrefix') ? project.getProperty('versionPrefix') : ''
+
+repositories {
+    mavenCentral()
+}

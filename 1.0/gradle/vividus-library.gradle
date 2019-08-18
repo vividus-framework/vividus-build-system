@@ -29,7 +29,6 @@ repositories {
             excludeGroup 'org.vividus'
         }
     }
-    mavenCentral()
     maven {
         url 'https://dl.bintray.com/vividus/maven-releases'
         mavenContent {
