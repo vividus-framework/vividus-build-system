@@ -17,5 +17,3 @@
 ext.buildSystemConfigDir = new File(buildscript.sourceFile.parentFile, 'config')
 ext.gradleScriptDir = new File(buildscript.sourceFile.parentFile, 'gradle')
 apply from: "${gradleScriptDir}/vividus-library.gradle"
-
-artifactoryPublish.dependsOn project.tasks['sonarqube']
