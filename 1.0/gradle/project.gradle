@@ -16,14 +16,6 @@
 
 rootProject.wrapper.gradleVersion = '5.6'
 
-allprojects {
-    buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
-}
-
-repositories {
-    mavenCentral()
-}
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -34,7 +26,7 @@ buildscript {
 }
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
 
-ext.customVersionPrefix = project.hasProperty('versionPrefix') ? project.getProperty('versionPrefix') : ''
+def customVersionPrefix = project.findProperty('versionPrefix') ?: ''
 scmVersion {
     tag {
         if (customVersionPrefix.length() > 0) {
@@ -44,5 +36,20 @@ scmVersion {
 }
 
 def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
-project.version = new File(scmVersion.repository.directory, '.git').exists() ?
-        customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
+
+
+allprojects {
+    buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
+    project.version = new File(scmVersion.repository.directory, '.git').exists() ?
+            customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
+
+            task ppl{
+              doLast {
+                println version
+              }
+            }
+}
+
+repositories {
+    mavenCentral()
+}
