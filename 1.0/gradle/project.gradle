@@ -20,8 +20,29 @@ allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
 }
 
-ext.customVersionPrefix = project.hasProperty('versionPrefix') ? project.getProperty('versionPrefix') : ''
-
 repositories {
     mavenCentral()
 }
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath(group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.10.2')
+    }
+}
+apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
+
+ext.customVersionPrefix = project.hasProperty('versionPrefix') ? project.getProperty('versionPrefix') : ''
+scmVersion {
+    tag {
+        if (customVersionPrefix.length() > 0) {
+            prefix = 'releases/' + customVersionPrefix
+        }
+    }
+}
+
+def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
+project.version = new File(scmVersion.repository.directory, '.git').exists() ?
+        customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'

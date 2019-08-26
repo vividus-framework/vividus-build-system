@@ -16,10 +16,6 @@
 
 group 'org.vividus'
 
-def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
-project.version = new File(scmVersion.repository.directory, '.git').exists() ?
-        customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
-
 repositories {
     mavenLocal()
     jcenter {
