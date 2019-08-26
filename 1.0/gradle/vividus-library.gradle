@@ -246,11 +246,6 @@ buildscript {
     }
 }
 apply plugin: org.sonarqube.gradle.SonarQubePlugin
-sonarqube {
-    properties {
-        property 'sonar.projectName', sonarProjectName
-    }
-}
 
 buildscript {
     dependencies {
