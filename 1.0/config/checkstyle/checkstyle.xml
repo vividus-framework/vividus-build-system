@@ -161,12 +161,12 @@
       <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS"/>
     </module>
     <module name="MethodParamPad"/>
-    <module name="CustomImportOrder">
-      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
-      <property name="standardPackageRegExp" value="^(javax|java)\."/>
-      <property name="specialImportsRegExp" value="^(org|com)\."/>
-      <property name="separateLineBetweenGroups" value="true"/>
-      <property name="sortImportsInGroupAlphabetically" value="true"/>
+    <module name="ImportOrder">
+      <property name="groups" value="/^java\./,javax,com,org"/>
+      <property name="ordered" value="true"/>
+      <property name="separated" value="true"/>
+      <property name="option" value="top"/>
+      <property name="sortStaticImportsAlphabetically" value="true"/>
     </module>
     <module name="SuppressionCommentFilter"/>
   </module>
