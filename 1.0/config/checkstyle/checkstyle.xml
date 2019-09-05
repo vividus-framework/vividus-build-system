@@ -14,7 +14,10 @@
     <module name="EmptyForIteratorPad"/>
     <module name="EqualsHashCode"/>
     <module name="OneStatementPerLine"/>
-    <module name="IllegalImport"/>
+    <module name="IllegalImport">
+      <property name="regexp" value="true" />
+      <property name="illegalClasses" value="^junit\.framework\..+,^org\.junit\.Assert\.assertThat,^org\.junit\.Assume\.assumeThat" />
+    </module>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
     <module name="LeftCurly">
