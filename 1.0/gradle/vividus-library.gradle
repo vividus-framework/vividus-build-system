@@ -282,6 +282,7 @@ ext.gitignorePatterns = rootProject.file('.gitignore')
 spotless {
     java {
         licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
+        importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
     }
     format 'documentation', {
         target '**/*.md'
