@@ -267,7 +267,7 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 
 buildscript {
     dependencies {
-        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '3.24.0')
+        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '3.24.2')
     }
 }
 apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
