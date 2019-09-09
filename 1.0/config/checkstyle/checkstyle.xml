@@ -43,6 +43,7 @@
     <module name="OperatorWrap"/>
     <module name="PackageName"/>
     <module name="ParameterName"/>
+    <module name="LambdaParameterName"/>
     <module name="ParameterNumber">
       <property name="id" value="paramNum"/>
       <property name="max" value="9"/>
