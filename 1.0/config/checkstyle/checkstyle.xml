@@ -187,6 +187,18 @@
         <property name="format" value="^\s*\*\s*@author"/>
   </module>
 
+  <!-- https://github.com/checkstyle/checkstyle/issues/3379#issuecomment-251223351 -->
+  <module name="RegexpMultiline">
+    <property name="message" value="Blank line at start of block should be removed" />
+    <property name="format" value="(?&lt;=\{\n\s{0,99}$)^$" />
+    <property name="fileExtensions" value="java" />
+  </module>
+  <module name="RegexpMultiline">
+    <property name="message" value="Blank line at end of block should be removed" />
+    <property name="format" value="(?&lt;!\{\n\s{0,99}$)^$(?=^\s{0,99}\})" />
+    <property name="fileExtensions" value="java" />
+  </module>
+
   <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
   <module name="SuppressWarningsFilter"/>
   <module name="SuppressWithPlainTextCommentFilter">
