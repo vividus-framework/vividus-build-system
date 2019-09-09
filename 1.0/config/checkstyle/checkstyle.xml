@@ -169,6 +169,9 @@
       <property name="sortStaticImportsAlphabetically" value="true"/>
     </module>
     <module name="SuppressionCommentFilter"/>
+    <module name="JavadocMethod">
+      <property name="allowMissingJavadoc" value="true"/>
+    </module>
   </module>
   <module name="FileTabCharacter"/>
   <module name="FileLength">
