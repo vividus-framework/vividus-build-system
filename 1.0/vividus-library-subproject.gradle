@@ -17,3 +17,19 @@
 ext.buildSystemConfigDir = new File(buildscript.sourceFile.parentFile, 'config')
 ext.gradleScriptDir = new File(buildscript.sourceFile.parentFile, 'gradle')
 apply from: "${gradleScriptDir}/vividus-library.gradle"
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath(group: 'io.spring.nohttp', name: 'nohttp-gradle', version: '0.0.3.RELEASE') {
+            // exclude this to stop warnings about multiple SLF4J bindings.
+            exclude group: 'ch.qos.logback', module: 'logback-classic'
+        }
+    }
+}
+apply plugin: io.spring.nohttp.gradle.NoHttpPlugin
+nohttp {
+    source.excludes = ['**/src/test/**', '**/*.min.js'] + gitignorePatterns
+}
