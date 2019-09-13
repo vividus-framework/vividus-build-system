@@ -42,12 +42,6 @@ allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
     project.version = new File(scmVersion.repository.directory, '.git').exists() ?
             customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
-
-            task ppl{
-              doLast {
-                println version
-              }
-            }
 }
 
 repositories {
