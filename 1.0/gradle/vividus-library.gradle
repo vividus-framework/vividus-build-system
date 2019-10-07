@@ -35,6 +35,9 @@ repositories {
             snapshotsOnly()
         }
     }
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 buildscript {
