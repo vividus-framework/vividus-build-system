@@ -241,7 +241,7 @@ tasks.withType(Pmd) {
 
 buildscript {
     dependencies {
-        classpath(group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '2.7.1')
+        classpath(group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '2.8')
     }
 }
 apply plugin: org.sonarqube.gradle.SonarQubePlugin
