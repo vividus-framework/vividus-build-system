@@ -130,9 +130,10 @@ task runStories (dependsOn: build, type: JavaExec, group: 'Vividus') {
     }
 }
 
-task printSteps (dependsOn: build, type: JavaExec, group: 'Vividus') {
+task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
     description = 'Prints available steps in alphabetical order.'
     main = 'org.vividus.runner.BddStepPrinter'
+    arguments = ['file']
 }
 
 task validateKnownIssues (dependsOn: build, type: JavaExec, group: 'Vividus') {
