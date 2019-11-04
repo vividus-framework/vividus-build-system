@@ -243,7 +243,7 @@ apply from: "${gradleScriptDir}/sonarqube.gradle"
 
 buildscript {
     dependencies {
-        classpath(group: 'gradle.plugin.com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: '2.0.0')
+        classpath(group: 'com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: '2.0.1')
 
         classpath('com.google.guava:guava:28.0-jre') // https://github.com/spotbugs/spotbugs-gradle-plugin/issues/147
     }
