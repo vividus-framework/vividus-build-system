@@ -98,8 +98,6 @@ task distSourcesZip(type: Zip) {
     }
 }
 
-sourcesJar.enabled = false
-javadocJar.enabled = false
 distSourcesZip.enabled = false
 distTar.enabled = true
 distZip.enabled = false

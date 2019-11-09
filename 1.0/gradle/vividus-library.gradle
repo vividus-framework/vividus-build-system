@@ -51,7 +51,9 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven'
 
-sourceCompatibility = 11
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
 
 tasks.withType(JavaCompile) {
     configure(options) {
@@ -84,36 +86,11 @@ jar {
     }
 }
 
-javadoc {
-    source = sourceSets.main.allJava
-    includes = ['/org/vividus/**/*.java']
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
-build.dependsOn javadoc
-
 apply plugin: 'maven-publish'
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            afterEvaluate {
-                if (sourcesJar.enabled) {
-                    artifact sourcesJar
-                }
-                if (javadocJar.enabled) {
-                    artifact javadocJar
-                }
-            }
             pom {
                 inceptionYear = '2019'
                 licenses {
@@ -127,8 +104,6 @@ publishing {
     }
 }
 
-sourcesJar.enabled = true
-javadocJar.enabled = true
 
 eclipse.classpath.file.whenMerged {
     entries.removeAll {

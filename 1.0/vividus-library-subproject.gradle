@@ -18,6 +18,11 @@ ext.buildSystemConfigDir = new File(buildscript.sourceFile.parentFile, 'config')
 ext.gradleScriptDir = new File(buildscript.sourceFile.parentFile, 'gradle')
 apply from: "${gradleScriptDir}/vividus-library.gradle"
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 buildscript {
     repositories {
         gradlePluginPortal()
