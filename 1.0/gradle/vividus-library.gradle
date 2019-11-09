@@ -214,8 +214,6 @@ tasks.withType(Pmd) {
     }
 }
 
-apply from: "${gradleScriptDir}/sonarqube.gradle"
-
 buildscript {
     dependencies {
         classpath(group: 'com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: '2.0.1')
