@@ -192,7 +192,7 @@ test.dependsOn doJacocoOfflineInstrumentation
 apply plugin: 'checkstyle'
 checkstyle {
     toolVersion = 8.26
-    configDir = file("${buildSystemConfigDir}/checkstyle")
+    configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
         checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.35.0')
     }
