@@ -173,6 +173,11 @@
     <module name="JavadocMethod">
       <property name="allowMissingJavadoc" value="true"/>
     </module>
+    <module name="CommentsIndentation"/>
+    <module name="TrailingComment" />
+    <module name="TodoComment">
+      <property name="format" value="(TODO)|(FIXME)"/>
+    </module>
   </module>
   <module name="FileTabCharacter"/>
   <module name="FileLength">
