@@ -25,10 +25,6 @@
       <property name="tokens" value="INTERFACE_DEF,CLASS_DEF,ANNOTATION_DEF,ENUM_DEF,CTOR_DEF,METHOD_DEF,ENUM_CONSTANT_DEF,LITERAL_WHILE,LITERAL_TRY,LITERAL_CATCH,LITERAL_FINALLY,LITERAL_SYNCHRONIZED,LITERAL_SWITCH,LITERAL_DO,LITERAL_IF,LITERAL_ELSE,LITERAL_FOR"/>
     </module>
     <module name="OuterTypeNumber"/>
-    <module name="LineLength">
-      <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
-      <property name="max" value="120"/>
-    </module>
     <module name="MethodCount">
       <property name="maxTotal" value="35"/>
     </module>
@@ -170,14 +166,16 @@
       <property name="sortStaticImportsAlphabetically" value="true"/>
     </module>
     <module name="SuppressionCommentFilter"/>
-    <module name="JavadocMethod">
-      <property name="allowMissingJavadoc" value="true"/>
-    </module>
+    <module name="JavadocMethod" />
     <module name="CommentsIndentation"/>
     <module name="TrailingComment" />
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)"/>
     </module>
+  </module>
+  <module name="LineLength">
+    <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
+    <property name="max" value="120"/>
   </module>
   <module name="FileTabCharacter"/>
   <module name="FileLength">
