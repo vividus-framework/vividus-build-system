@@ -103,6 +103,10 @@
     <module name="com.github.sevntu.checkstyle.checks.coding.UnnecessaryParenthesesExtendedCheck"/>
     <module name="com.github.sevntu.checkstyle.checks.coding.UselessSingleCatchCheck"/>
     <module name="com.github.sevntu.checkstyle.checks.coding.UselessSuperCtorCallCheck"/>
+    <module name="com.github.sevntu.checkstyle.checks.annotation.RequiredParameterForAnnotationCheck">
+        <property name="annotationName" value="Deprecated"/>
+        <property name="requiredParameters" value="since,forRemoval"/>
+    </module>
     <module name="AnnotationLocation"/>
     <module name="ClassTypeParameterName"/>
     <module name="MethodTypeParameterName"/>
