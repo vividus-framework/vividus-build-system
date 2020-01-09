@@ -109,16 +109,6 @@ eclipse.classpath.file.whenMerged {
         (it in org.gradle.plugins.ide.eclipse.model.AbstractClasspathEntry && it.entryAttributes['gradle_used_by_scope'] == ''
             && !it.path.contains('spotbugs-annotations')) //Gradle doesn't handle 'compileOnly' scope properly
     }
-    tinkerEclipseTestClasspath(entries, 'test')
-}
-
-ext.tinkerEclipseTestClasspath = { entries, scope ->
-    // https://github.com/gradle/gradle/issues/4802 :
-    entries.each {
-        if (it in org.gradle.plugins.ide.eclipse.model.AbstractClasspathEntry && it.entryAttributes['gradle_used_by_scope'] == scope) {
-            it.entryAttributes['test'] = true
-        }
-    }
 }
 
 
