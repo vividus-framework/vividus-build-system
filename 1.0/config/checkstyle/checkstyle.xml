@@ -50,6 +50,7 @@
     <module name="RedundantModifier"/>
     <module name="RightCurly">
       <property name="option" value="alone"/>
+      <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF"/>
     </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
@@ -88,9 +89,11 @@
     <module name="PackageAnnotation"/>
     <module name="SuppressWarnings"/>
     <module name="OuterTypeFilename"/>
+    <module name="AvoidNoArgumentSuperConstructorCall"/>
     <module name="HideUtilityClassConstructor"/>
     <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
     <module name="SuppressWarningsHolder"/>
+    <module name="NoEnumTrailingComma"/>
     <module name="com.github.sevntu.checkstyle.checks.naming.EnumValueNameCheck">
       <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
     </module>
