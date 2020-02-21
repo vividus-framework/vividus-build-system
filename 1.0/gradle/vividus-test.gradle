@@ -116,7 +116,12 @@ task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vivi
 }
 build.dependsOn testVividusInitialization
 
-task runStories (dependsOn: build, type: JavaExec, group: 'Vividus') {
+class RunStoriesTask extends JavaExec {
+    @Input
+    boolean treatKnownIssuesOnlyAsPassed
+}
+
+task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
     description = 'Runs stories.'
     main = 'org.vividus.runner.StoriesRunner'
     doFirst {
@@ -125,6 +130,14 @@ task runStories (dependsOn: build, type: JavaExec, group: 'Vividus') {
             ['vividus.output.directory': "${project.buildDir}"]
                 + project.properties.findAll({k,v -> k.startsWith('vividus.')})
         )
+    }
+    ignoreExitValue true
+    doLast {
+        if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
+            logger.warn('\nKNOWN ISSUES ONLY: All test failures are known issues')
+        } else {
+            executionResult.get().assertNormalExitValue()
+        }
     }
 }
 
