@@ -106,6 +106,7 @@ storiesJar.enabled = false
 
 
 class VividusTask extends JavaExec {
+    @Input
     String[] arguments;
 }
 
