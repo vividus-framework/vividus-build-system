@@ -18,11 +18,7 @@ group 'org.vividus'
 
 repositories {
     mavenLocal()
-    jcenter {
-        content {
-            excludeGroup 'org.vividus'
-        }
-    }
+    jcenter()
     maven {
         url 'https://dl.bintray.com/vividus/maven-releases'
         mavenContent {
