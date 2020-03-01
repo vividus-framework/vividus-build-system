@@ -149,6 +149,7 @@
     <module name="MultipleVariableDeclarations"/>
     <module name="PackageDeclaration"/>
     <module name="StringLiteralEquality"/>
+    <module name="AvoidDoubleBraceInitialization"/>
     <module name="SuperClone"/>
     <module name="UnnecessaryParentheses"/>
     <module name="VariableDeclarationUsageDistance">
