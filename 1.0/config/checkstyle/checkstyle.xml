@@ -16,7 +16,7 @@
     <module name="OneStatementPerLine"/>
     <module name="IllegalImport">
       <property name="regexp" value="true" />
-      <property name="illegalClasses" value="^junit\.framework\..+,^org\.junit\.Assert\..+,^org\.junit\.Assume\.assumeThat,^org\.junit\.rules\.ExpectedException" />
+      <property name="illegalClasses" value="^junit\.framework\..+,^org\.junit\.Assert\..+,^org\.junit\.Assume\.assumeThat,^org\.junit\.rules\.ExpectedException,^org\.hamcrest\.CoreMatchers.*" />
     </module>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
