@@ -39,6 +39,9 @@ repositories {
 buildscript {
     repositories {
         gradlePluginPortal()
+        maven {
+            url 'https://jitpack.io'
+        }
     }
 }
 
@@ -201,19 +204,20 @@ tasks.withType(Pmd) {
 
 buildscript {
     dependencies {
-        classpath(group: 'com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: '3.0.0')
-
-        classpath('com.google.guava:guava:28.0-jre') // https://github.com/spotbugs/spotbugs-gradle-plugin/issues/147
+        classpath(group: 'gradle.plugin.com.github.spotbugs.snom', name: 'spotbugs-gradle-plugin', version: '4.0.0')
     }
 }
-apply plugin: com.github.spotbugs.SpotBugsPlugin
-spotbugs.toolVersion = '4.0.0-beta1'
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
+ext {
+    spotbugsVersion = '4.0.0'
+}
+spotbugs.toolVersion = 'a13a6fea8e'
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
     omitVisitors = ['LostLoggerDueToWeakReference',
         'FindNullDeref' // https://github.com/spotbugs/spotbugs/issues/259
     ]
     if (it.name.endsWith('Test')) {
-        omitVisitors += ['MethodReturnCheck', 'FindNullDeref']
+        omitVisitors.add('MethodReturnCheck')
     }
     reports {
         xml.enabled = false
