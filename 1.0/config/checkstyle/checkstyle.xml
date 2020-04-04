@@ -157,6 +157,7 @@
     <module name="AvoidDoubleBraceInitialization"/>
     <module name="SuperClone"/>
     <module name="UnnecessaryParentheses"/>
+    <module name="UnnecessarySemicolonAfterOuterTypeDeclaration"/>
     <module name="VariableDeclarationUsageDistance">
       <property name="allowedDistance" value="5"/>
     </module>
