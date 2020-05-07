@@ -191,6 +191,7 @@
     </module>
     <module name="SuppressionCommentFilter"/>
     <module name="JavadocMethod" />
+    <module name="JavadocMissingWhitespaceAfterAsterisk" />
     <module name="CommentsIndentation"/>
     <module name="TrailingComment" />
     <module name="TodoComment">
