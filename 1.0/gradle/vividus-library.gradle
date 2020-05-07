@@ -224,7 +224,7 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 
 buildscript {
     dependencies {
-        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '3.27.2')
+        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '3.29.0')
     }
 }
 apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
