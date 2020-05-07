@@ -165,7 +165,6 @@ task countSteps (dependsOn: build, type: JavaExec, group: 'Vividus') {
 
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
     task.doFirst {
-        main = task.property('main')
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         if (task.hasProperty('arguments')) {
             task.property('arguments').each { arg ->
