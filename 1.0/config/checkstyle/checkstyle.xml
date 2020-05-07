@@ -197,6 +197,13 @@
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)"/>
     </module>
+    <module name="RegexpSinglelineJava">
+      <property name="id" value="streamOf"/>
+      <property name="maximum" value="0"/>
+      <property name="format" value="Arrays\.stream" />
+      <property name="message" value="Use java.util.stream.Stream#of(T...)" />
+      <property name="ignoreComments" value="true" />
+    </module>
   </module>
   <module name="LineLength">
     <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
