@@ -187,7 +187,7 @@ checkstyle {
 apply plugin: 'pmd'
 pmd {
     ignoreFailures = true
-    toolVersion = '6.22.0'
+    toolVersion = '6.23.0'
     ruleSets = []
 }
 pmdMain {
