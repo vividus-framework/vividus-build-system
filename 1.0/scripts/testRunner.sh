@@ -153,6 +153,6 @@ then
     printf 'INFO: start tests\n'
     cd ..
     rm -rf logs
-    rm -rf output
+    rm -rf output/allure-results
     java -cp $PATH_TO_ARTIFACT/classes:$PATH_TO_ARTIFACT/lib/* ${PROFILE:+ -Dprofile='$PROFILE'} ${ENCODING:+ -Dfile.encoding='$ENCODING'} $MAIN_CLASS
 fi
