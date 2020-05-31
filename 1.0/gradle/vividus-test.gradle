@@ -24,10 +24,8 @@ configurations.all {
 
 spotless {
     format 'Vividus', {
-        target fileTree(rootDir) {
-            include '**/*.story', '**/*.steps', '**/*.table'
-            exclude gitignorePatterns
-        }
+        target '**/*.story', '**/*.steps', '**/*.table'
+        targetExclude gitignorePatterns
 
         trimTrailingWhitespace()
         indentWithSpaces()
