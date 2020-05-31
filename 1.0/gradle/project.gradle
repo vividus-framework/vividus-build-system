@@ -20,6 +20,7 @@ buildscript {
     }
     dependencies {
         classpath(group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.11.0')
+        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '4.0.1')
     }
 }
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
@@ -35,11 +36,42 @@ scmVersion {
 
 def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
 
+// Added to exclude files mentioned in .gitignore
+//https://github.com/diffplug/spotless/issues/365
+def prefix = '**/'
+ext.gitignorePatterns = rootProject.file('.gitignore')
+    .readLines()
+    .findAll({ !it.startsWith('#') && !it.isEmpty() })
+    .collect({ it.startsWith(prefix) ? it : prefix + it })
+
 
 allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
     project.version = new File(scmVersion.repository.directory, '.git').exists() ?
             customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
+
+    apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
+}
+
+rootProject.apply {
+    spotless {
+        format 'documentation', {
+            target '**/*.md'
+
+            indentWithSpaces()
+            endWithNewline()
+        }
+        format 'misc', {
+            target fileTree(rootDir) {
+                include '**/*.gradle', '**/.gitignore', '**/*.xml', '**/*.json', '**/*.properties'
+                exclude gitignorePatterns
+            }
+
+            trimTrailingWhitespace()
+            indentWithSpaces()
+            endWithNewline()
+        }
+    }
 }
 
 repositories {

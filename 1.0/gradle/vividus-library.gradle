@@ -222,40 +222,10 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
     }
 }
 
-buildscript {
-    dependencies {
-        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '3.30.0')
-    }
-}
-apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
-// Added to exclude files mentioned in .gitignore
-//https://github.com/diffplug/spotless/issues/365
-def prefix = '**/'
-ext.gitignorePatterns = rootProject.file('.gitignore')
-    .readLines()
-    .findAll({ !it.startsWith('#') && !it.isEmpty() })
-    .collect({ it.startsWith(prefix) ? it : prefix + it })
-
 spotless {
     java {
         licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
-    }
-    format 'documentation', {
-        target '**/*.md'
-
-        indentWithSpaces()
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree(rootDir) {
-            include '**/*.gradle', '**/.gitignore', '**/*.xml', '**/*.json', '**/*.properties'
-            exclude gitignorePatterns
-        }
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
     }
 }
 
