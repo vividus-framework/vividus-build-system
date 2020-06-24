@@ -59,6 +59,12 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Test) {
     useJUnitPlatform()
+    def testExceptionFormatKey = 'test.testLogging.exceptionFormat'
+    if (project.hasProperty(testExceptionFormatKey)) {
+        test.testLogging {
+            exceptionFormat project.property(testExceptionFormatKey)
+        }
+    }
 }
 
 tasks.withType(Jar) {
