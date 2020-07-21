@@ -186,7 +186,12 @@ apply plugin: 'checkstyle'
 checkstyle {
     configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
-        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '8.32')
+        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle') {
+            version {
+                // https://github.com/checkstyle/checkstyle/issues/8299
+                strictly '8.32'
+            }
+        }
         checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.37.1')
     }
 }
