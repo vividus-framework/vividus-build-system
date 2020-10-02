@@ -194,7 +194,7 @@ checkstyle {
 apply plugin: 'pmd'
 pmd {
     toolVersion = '6.28.0'
-    maxFailures = 46
+    maxFailures = 39
     ruleSets = []
 }
 pmdMain {
