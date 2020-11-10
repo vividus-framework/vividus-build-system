@@ -107,6 +107,10 @@ jar {
     }
 }
 
+tasks.withType(Javadoc) {
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+}
+
 apply plugin: 'maven-publish'
 publishing {
     publications {
