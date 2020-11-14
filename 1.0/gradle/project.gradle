@@ -20,7 +20,7 @@ buildscript {
     }
     dependencies {
         classpath(group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.12.1')
-        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '5.7.0')
+        classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '5.8.0')
 
         // Spotless uses JGit 5.8 https://wiki.eclipse.org/JGit/New_and_Noteworthy/5.8
         // But 'axion-release-plugin' uses JGit 5.7, so we need to add dependency explicitly
