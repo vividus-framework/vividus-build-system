@@ -19,7 +19,7 @@
         gradlePluginPortal()
     }
     dependencies {
-        classpath(group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '3.0')
+        classpath(group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '3.1')
     }
  }
  apply plugin: org.sonarqube.gradle.SonarQubePlugin
