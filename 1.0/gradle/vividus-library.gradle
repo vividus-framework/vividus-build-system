@@ -254,7 +254,10 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 
 spotless {
     java {
-        ratchetFrom 'origin/master'
+        def origin = 'origin/master'
+        if (new File(gitRepo, 'refs/remotes/' + origin).exists()) {
+            ratchetFrom origin
+        }
         licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
     }
