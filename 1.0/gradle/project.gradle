@@ -51,7 +51,8 @@ ext.gitignorePatterns = rootProject.file('.gitignore')
 
 allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
-    project.version = new File(scmVersion.repository.directory, '.git').exists() ?
+    ext.gitRepo = new File(scmVersion.repository.directory, '.git')
+    project.version = gitRepo.exists() && !new File(gitRepo, 'refs/heads').listFiles().size().equals(0) ?
             customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
 
     apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
