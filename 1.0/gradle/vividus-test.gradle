@@ -132,13 +132,36 @@ task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
     }
     ignoreExitValue true
     doLast {
-        if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
+        if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics"))
+        {
+            logger.warn('\nExit value {} is ignored', executionResult.get().getExitValue())
+        }
+        else if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
             logger.warn('\nKNOWN ISSUES ONLY: All test failures are known issues')
         } else {
             executionResult.get().assertNormalExitValue()
         }
     }
 }
+
+tasks.register('validateRunStatistics') {
+    dependsOn 'runStories'
+    def property = 'expectedRunStatistics';
+    def expectedResult = project.findProperty(property)
+    if (!expectedResult) {
+        throw new StopExecutionException("project property \"$property\" should be set")
+    }
+    doLast {
+        def slurper = new groovy.json.JsonSlurper()
+        File actualFile = new File(project.buildDir, 'statistics/statistics.json')
+        File expectedFile = new File(project.buildDir, expectedResult)
+        def actualMap = slurper.parseText(actualFile.text)
+        def expectedMap = slurper.parseText(expectedFile.text)
+        logger.warn("Expected execution statistics:\n {} actual ecxecution statistics :\n {}", expectedFile.text, actualFile.text)
+        assert expectedMap == actualMap
+    }
+}
+
 
 task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
     description = 'Prints available steps in alphabetical order.'
