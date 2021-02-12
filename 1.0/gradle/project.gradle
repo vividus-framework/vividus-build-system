@@ -52,9 +52,12 @@ ext.gitignorePatterns = rootProject.file('.gitignore')
 allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
     ext.gitRepo = new File(scmVersion.repository.directory, '.git')
-    project.version = gitRepo.exists() && !new File(gitRepo, 'refs/heads').listFiles().size().equals(0) ?
-            customPrefixWithSeparator + scmVersion.version : 'local-SNAPSHOT'
-
+    try {
+        project.version = customPrefixWithSeparator + scmVersion.version
+    }
+    catch (pl.allegro.tech.build.axion.release.domain.scm.ScmException e) {
+        project.version = 'local-SNAPSHOT'
+    }
     apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
 }
 
