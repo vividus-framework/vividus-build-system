@@ -148,8 +148,10 @@ tasks.register('validateRunStatistics') {
     dependsOn 'runStories'
     def property = 'expectedRunStatistics';
     def expectedResult = project.findProperty(property)
-    if (!expectedResult) {
-        throw new StopExecutionException("project property \"$property\" should be set")
+    gradle.taskGraph.whenReady {
+        if (!expectedResult) {
+            throw new StopExecutionException("project property \"$property\" should be set")
+        }
     }
     doLast {
         def slurper = new groovy.json.JsonSlurper()
