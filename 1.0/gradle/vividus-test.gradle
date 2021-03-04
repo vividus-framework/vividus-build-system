@@ -145,6 +145,9 @@ task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
 }
 
 task debugStories(dependsOn: runStories, group: 'Vividus') {
+}
+
+if (gradle.startParameter.taskNames.any { it ==~ 'd.*S.*' }) {
     gradle.startParameter.excludedTaskNames += ["check"]
 }
 
