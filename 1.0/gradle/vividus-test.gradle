@@ -113,7 +113,7 @@ task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vivi
     main = 'org.vividus.runner.VividusInitializationChecker'
     arguments = ['ignoreBeans']
 }
-build.dependsOn testVividusInitialization
+check.dependsOn testVividusInitialization
 
 class RunStoriesTask extends JavaExec {
     @Input
@@ -142,6 +142,10 @@ task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
             executionResult.get().assertNormalExitValue()
         }
     }
+}
+
+task debugStories(dependsOn: runStories, group: 'Vividus') {
+    gradle.startParameter.excludedTaskNames += ["check"]
 }
 
 tasks.register('validateRunStatistics') {
