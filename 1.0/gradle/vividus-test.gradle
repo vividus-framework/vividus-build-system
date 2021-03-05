@@ -115,13 +115,12 @@ task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vivi
 }
 check.dependsOn testVividusInitialization
 
-class RunStoriesTask extends JavaExec {
+class StoriesExec extends JavaExec {
     @Input
     boolean treatKnownIssuesOnlyAsPassed
 }
 
-task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
-    description = 'Runs stories.'
+tasks.withType(StoriesExec).configureEach {
     main = 'org.vividus.runner.StoriesRunner'
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
@@ -132,8 +131,7 @@ task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
     }
     ignoreExitValue true
     doLast {
-        if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics"))
-        {
+        if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics")) {
             logger.warn('\nExit value {} is ignored', executionResult.get().getExitValue())
         }
         else if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
@@ -144,11 +142,12 @@ task runStories (dependsOn: build, type: RunStoriesTask, group: 'Vividus') {
     }
 }
 
-task debugStories(dependsOn: runStories, group: 'Vividus') {
+task runStories (dependsOn: build, type: StoriesExec, group: 'Vividus') {
+    description = 'Runs stories.'
 }
 
-if (gradle.startParameter.taskNames.any { it ==~ 'd.*S.*' }) {
-    gradle.startParameter.excludedTaskNames += ["check"]
+task debugStories (dependsOn: assemble, type: StoriesExec, group: 'Vividus') {
+    description = 'Debug stories (all build checks are ignored).'
 }
 
 tasks.register('validateRunStatistics') {
