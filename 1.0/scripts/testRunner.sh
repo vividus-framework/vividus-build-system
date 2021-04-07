@@ -154,5 +154,5 @@ then
     cd ..
     rm -rf logs
     rm -rf output/allure-results
-    java -cp $PATH_TO_ARTIFACT/classes:$PATH_TO_ARTIFACT/lib/* ${PROFILE:+ -Dprofile='$PROFILE'} ${ENCODING:+ -Dfile.encoding='$ENCODING'} $MAIN_CLASS
+    java -cp $PATH_TO_ARTIFACT/classes:$PATH_TO_ARTIFACT/lib/* ${PROFILE:+ -Dprofile="$PROFILE"} ${ENCODING:+ -Dfile.encoding="$ENCODING"} $MAIN_CLASS
 fi
