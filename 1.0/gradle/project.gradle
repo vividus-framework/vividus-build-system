@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,8 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath(group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.12.1')
+        classpath(group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.13.2')
         classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '5.12.1')
-
-        // Spotless uses JGit 5.8 https://wiki.eclipse.org/JGit/New_and_Noteworthy/5.8
-        // But 'axion-release-plugin' uses JGit 5.7, so we need to add dependency explicitly
-        classpath(group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.ssh.jsch', version: '5.8.0.202006091008-r')
     }
 }
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
