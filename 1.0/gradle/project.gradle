@@ -30,6 +30,8 @@ scmVersion {
     tag {
         if (customVersionPrefix.length() > 0) {
             prefix = 'releases/' + customVersionPrefix
+        } else {
+            prefix = 'release-'
         }
     }
 }
