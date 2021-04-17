@@ -153,6 +153,7 @@
     <module name="com.github.sevntu.checkstyle.checks.design.NestedSwitchCheck"/>
     <module name="com.github.sevntu.checkstyle.checks.design.AvoidConditionInversionCheck"/>
     <module name="com.github.sevntu.checkstyle.checks.design.NoMainMethodInAbstractClassCheck"/>
+    <module name="com.github.sevntu.checkstyle.checks.coding.PreferMethodReferenceCheck"/>
     <module name="SeparatorWrap">
       <property name="tokens" value="COMMA"/>
     </module>
