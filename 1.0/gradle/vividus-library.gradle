@@ -26,7 +26,7 @@ repositories {
         }
     }
     maven {
-        url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        url 'https://vividuscentral.jfrog.io/artifactory/snapshots'
         mavenContent {
             snapshotsOnly()
         }
