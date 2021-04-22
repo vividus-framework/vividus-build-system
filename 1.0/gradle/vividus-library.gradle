@@ -20,7 +20,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'https://dl.bintray.com/vividus/maven-releases'
+        url 'https://vividuscentral.jfrog.io/artifactory/releases'
         mavenContent {
             releasesOnly()
         }
