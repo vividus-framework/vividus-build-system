@@ -19,6 +19,7 @@ group 'org.vividus'
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
     maven {
         url 'https://vividuscentral.jfrog.io/artifactory/releases'
         mavenContent {
