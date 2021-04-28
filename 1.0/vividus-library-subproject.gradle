@@ -28,7 +28,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath(group: 'io.spring.nohttp', name: 'nohttp-gradle', version: '0.0.6.RELEASE') {
+        classpath(group: 'io.spring.nohttp', name: 'nohttp-gradle', version: '0.0.7') {
             // exclude this to stop warnings about multiple SLF4J bindings.
             exclude group: 'ch.qos.logback', module: 'logback-classic'
         }
