@@ -102,8 +102,13 @@ distZip.enabled = false
 storiesJar.enabled = false
 
 
+class VividusJavaExec extends JavaExec {
+    def collectVividusProperties() {
+        project.properties.findAll({k,v -> k.startsWith('vividus.')})
+    }
+}
 
-class VividusTask extends JavaExec {
+class VividusTask extends VividusJavaExec {
     @Input
     String[] arguments;
 }
@@ -115,7 +120,7 @@ task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vivi
 }
 check.dependsOn testVividusInitialization
 
-class StoriesExec extends JavaExec {
+class StoriesExec extends VividusJavaExec {
     @Input
     boolean treatKnownIssuesOnlyAsPassed
 }
@@ -124,10 +129,7 @@ tasks.withType(StoriesExec).configureEach {
     main = 'org.vividus.runner.StoriesRunner'
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
-        systemProperties (
-            ['vividus.output.directory': "${project.buildDir}"]
-                + project.properties.findAll({k,v -> k.startsWith('vividus.')})
-        )
+        systemProperties(['vividus.output.directory': "${project.buildDir}"] + collectVividusProperties())
     }
     ignoreExitValue true
     doLast {
@@ -195,6 +197,7 @@ task countSteps (dependsOn: build, type: JavaExec, group: 'Vividus') {
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
     task.doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
+        systemProperties(collectVividusProperties())
         if (task.hasProperty('arguments')) {
             task.property('arguments').each { arg ->
                 if (project.hasProperty(arg)) {
