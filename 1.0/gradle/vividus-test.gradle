@@ -17,7 +17,7 @@
 apply from: "${gradleScriptDir}/vividus-library.gradle"
 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 1, 'days'
 }
 
 
