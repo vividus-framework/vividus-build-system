@@ -179,17 +179,17 @@ task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
     arguments = ['file']
 }
 
-task validateKnownIssues (dependsOn: build, type: JavaExec, group: 'Vividus') {
+task validateKnownIssues (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
     description = 'Validates known-issues configuration.'
     mainClass = 'org.vividus.runner.KnownIssueValidator'
 }
 
-task countScenarios (dependsOn: build, type: JavaExec, group: 'Vividus') {
+task countScenarios (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
     description = 'Counts scenarios in project.'
     mainClass = 'org.vividus.runner.BddScenariosCounter'
 }
 
-task countSteps (dependsOn: build, type: JavaExec, group: 'Vividus') {
+task countSteps (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
     description = 'Counts steps in project.'
     mainClass = 'org.vividus.runner.BddStepsCounter'
 }
