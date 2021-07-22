@@ -115,7 +115,7 @@ class VividusTask extends VividusJavaExec {
 
 task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vividus') {
     description = 'Performs Vividus initialization.'
-    main = 'org.vividus.runner.VividusInitializationChecker'
+    mainClass = 'org.vividus.runner.VividusInitializationChecker'
     arguments = ['ignoreBeans']
 }
 check.dependsOn testVividusInitialization
@@ -126,7 +126,7 @@ class StoriesExec extends VividusJavaExec {
 }
 
 tasks.withType(StoriesExec).configureEach {
-    main = 'org.vividus.runner.StoriesRunner'
+    mainClass = 'org.vividus.runner.StoriesRunner'
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         systemProperties(['vividus.output.directory': "${project.buildDir}"] + collectVividusProperties())
@@ -175,23 +175,23 @@ tasks.register('validateRunStatistics') {
 
 task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
     description = 'Prints available steps in alphabetical order.'
-    main = 'org.vividus.runner.BddStepPrinter'
+    mainClass = 'org.vividus.runner.BddStepPrinter'
     arguments = ['file']
 }
 
 task validateKnownIssues (dependsOn: build, type: JavaExec, group: 'Vividus') {
     description = 'Validates known-issues configuration.'
-    main = 'org.vividus.runner.KnownIssueValidator'
+    mainClass = 'org.vividus.runner.KnownIssueValidator'
 }
 
 task countScenarios (dependsOn: build, type: JavaExec, group: 'Vividus') {
     description = 'Counts scenarios in project.'
-    main = 'org.vividus.runner.BddScenariosCounter'
+    mainClass = 'org.vividus.runner.BddScenariosCounter'
 }
 
 task countSteps (dependsOn: build, type: JavaExec, group: 'Vividus') {
     description = 'Counts steps in project.'
-    main = 'org.vividus.runner.BddStepsCounter'
+    mainClass = 'org.vividus.runner.BddStepsCounter'
 }
 
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
