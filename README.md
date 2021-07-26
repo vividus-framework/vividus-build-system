@@ -6,7 +6,7 @@ VIVIDUS Build System is a set of [Gradle](https://gradle.org/) scripts and confi
 The build system can be added as [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to the root of the project with tests. In this case no extra configuration is needed.
 
 #### Update from the VIVIDUS Build System Remote
-To update the internal build system run the following command from the test proecjt root:
+To update the internal build system run the following command from the test project root:
 ```sh
 git submodule update --remote vividus-build-system
 ```
