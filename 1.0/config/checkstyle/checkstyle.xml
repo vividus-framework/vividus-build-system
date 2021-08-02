@@ -46,6 +46,7 @@
     <module name="ModifierOrder"/>
     <module name="NeedBraces"/>
     <module name="NoWhitespaceBefore"/>
+    <module name="NoWhitespaceBeforeCaseDefaultColon"/>
     <module name="OperatorWrap"/>
     <module name="PackageName"/>
     <module name="ParameterName"/>
