@@ -270,6 +270,14 @@ spotless {
         licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
     }
+    format 'VividusPlugins', {
+        target '**/*.steps'
+        targetExclude gitignorePatterns
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
 }
 
 
