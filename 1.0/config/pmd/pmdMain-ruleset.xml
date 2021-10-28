@@ -32,6 +32,11 @@
             <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+"/>
         </properties>
     </rule>
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports">
+        <properties>
+            <property name="maximumStaticImports" value="6"/>
+        </properties>
+    </rule>
 
     <rule ref="category/java/design.xml">
         <exclude name="DataClass"/>
