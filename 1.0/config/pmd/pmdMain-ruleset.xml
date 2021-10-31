@@ -27,11 +27,6 @@
             <property name="minimum" value="4"/>
         </properties>
     </rule>
-    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
-        <properties>
-            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+"/>
-        </properties>
-    </rule>
     <rule ref="category/java/codestyle.xml/TooManyStaticImports">
         <properties>
             <property name="maximumStaticImports" value="6"/>
