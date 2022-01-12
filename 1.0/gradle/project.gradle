@@ -57,9 +57,7 @@ allprojects {
         project.version = 'local-SNAPSHOT'
     }
     apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
-}
 
-rootProject.apply {
     spotless {
         format 'documentation', {
             target '**/*.md'
@@ -68,10 +66,8 @@ rootProject.apply {
             endWithNewline()
         }
         format 'misc', {
-            target fileTree(rootDir) {
-                include '**/*.gradle', '**/.gitignore', '**/*.xml', '**/*.json', '**/*.properties'
-                exclude gitignorePatterns
-            }
+            target '**/*.gradle', '**/.gitignore', '**/*.xml', '**/*.json', '**/*.properties'
+            targetExclude gitignorePatterns
 
             trimTrailingWhitespace()
             indentWithSpaces()
