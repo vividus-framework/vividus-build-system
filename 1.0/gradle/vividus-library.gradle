@@ -51,12 +51,6 @@ repositories {
         }
     }
     maven {
-        url 'https://vividuscentral.jfrog.io/artifactory/snapshots'
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-    maven {
         url 'https://jitpack.io'
     }
 }
