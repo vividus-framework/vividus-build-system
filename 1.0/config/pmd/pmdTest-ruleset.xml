@@ -43,6 +43,11 @@
             <property name="methodReportLevel" value="24"/>
         </properties>
     </rule>
+    <rule ref="category/java/design.xml/ImmutableField">
+        <properties>
+            <property name="ignoredAnnotations" value="org.mockito.Mock|org.mockito.Spy|org.mockito.Captor|org.mockito.InjectMocks" />
+        </properties>
+    </rule>
 
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentContent"/>
