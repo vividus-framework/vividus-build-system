@@ -127,6 +127,7 @@ class StoriesExec extends VividusJavaExec {
 
 tasks.withType(StoriesExec).configureEach {
     mainClass = 'org.vividus.runner.StoriesRunner'
+    jvmArgs += defaultJvmArgs
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         systemProperties(['vividus.output.directory': "${project.buildDir}"] + collectVividusProperties())
