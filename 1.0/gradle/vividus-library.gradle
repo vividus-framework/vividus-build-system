@@ -231,7 +231,7 @@ checkstyle {
     configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
         checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '10.2')
-        checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.41.0')
+        checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.42.0')
     }
 }
 
