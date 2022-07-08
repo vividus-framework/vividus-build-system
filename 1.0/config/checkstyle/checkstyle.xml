@@ -165,6 +165,7 @@
     <module name="SeparatorWrap">
       <property name="tokens" value="COMMA"/>
     </module>
+    <module name="SingleSpaceSeparator"/>
     <module name="AvoidNestedBlocks"/>
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>
