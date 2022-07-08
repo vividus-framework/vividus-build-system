@@ -80,7 +80,9 @@
     <module name="UpperEll"/>
     <module name="VisibilityModifier"/>
     <module name="WhitespaceAfter"/>
-    <module name="WhitespaceAround"/>
+    <module name="WhitespaceAround">
+      <property name="ignoreEnhancedForColon" value="false"/>
+    </module>
     <module name="GenericWhitespace"/>
     <module name="FinalClass"/>
     <module name="MissingSwitchDefault"/>
