@@ -29,7 +29,7 @@ Fast-forward
  build.gradle         |  2 +-
  vividus-build-system |  2 +-
  3 files changed, 5 insertions(+), 80 deletions(-)
- 
+
 <b>(main*) » git status</b>
 On branch main
 Your branch is up to date with 'origin/main'.
@@ -37,7 +37,7 @@ Your branch is up to date with 'origin/main'.
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git restore <file>..." to discard changes in working directory)
-	<b>modified:   vividus-build-system (new commits)</b>
+        <b>modified:   vividus-build-system (new commits)</b>
 
 no changes added to commit (use "git add" and/or "git commit -a")
 </pre>
