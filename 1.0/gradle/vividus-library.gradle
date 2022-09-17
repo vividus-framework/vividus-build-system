@@ -23,11 +23,6 @@ repositories {
             excludeGroup 'org.vividus'
         }
     }
-    jcenter() {
-        content {
-            excludeGroup 'org.vividus'
-        }
-    }
     maven {
         url 'https://maven.pkg.github.com/vividus-framework/vividus'
         credentials {
