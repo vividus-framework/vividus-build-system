@@ -81,8 +81,11 @@ task storiesJar(type: Jar) {
 }
 
 import org.apache.tools.ant.DirectoryScanner
+
+import java.nio.file.Paths
+
 task distSourcesZip(type: Zip) {
-     archiveClassifier = 'sources'
+    archiveClassifier = 'sources'
     //workaround for https://issues.gradle.org/browse/GRADLE-1883
     doFirst {
         DirectoryScanner.defaultExcludes.each { if(it.contains('.gitignore')){DirectoryScanner.removeDefaultExclude it }}
@@ -123,6 +126,13 @@ check.dependsOn testVividusInitialization
 class StoriesExec extends VividusJavaExec {
     @Input
     boolean treatKnownIssuesOnlyAsPassed
+
+    @Input
+    boolean resolvePathAgainstProjectBuildDir;
+
+    @Input
+    @Optional
+    String fileToSaveExitCode;
 }
 
 tasks.withType(StoriesExec).configureEach {
@@ -134,6 +144,14 @@ tasks.withType(StoriesExec).configureEach {
     }
     ignoreExitValue true
     doLast {
+        def pathToExitCodeFile = project.findProperty('fileToSaveExitCode') ?: fileToSaveExitCode
+        if (pathToExitCodeFile) {
+            def pathToFile = (project.findProperty('resolvePathAgainstProjectBuildDir') ?: resolvePathAgainstProjectBuildDir)
+                    ? Paths.get("${project.buildDir}", pathToExitCodeFile)
+                    : Paths.get(pathToExitCodeFile)
+            pathToFile.toFile().write("${executionResult.get().getExitValue()}")
+            logger.lifecycle("Exit code is saved to the file: ${pathToFile}")
+        }
         if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics")) {
             logger.warn('\nExit value {} is ignored', executionResult.get().getExitValue())
         }
