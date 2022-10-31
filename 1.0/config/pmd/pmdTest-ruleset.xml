@@ -70,6 +70,11 @@
             <property name="allowCommentedBlocks" value="true"/>
         </properties>
     </rule>
+    <rule ref="category/java/errorprone.xml/TestClassWithoutTestCases">
+        <properties>
+            <property name="testClassPattern" value="^.*Tests$"/>
+        </properties>
+    </rule>
 
     <rule ref="category/java/multithreading.xml">
         <exclude name="DoNotUseThreads"/>

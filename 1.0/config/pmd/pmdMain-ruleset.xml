@@ -59,6 +59,7 @@
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="TestClassWithoutTestCases"/>
         <exclude name="UseLocaleWithCaseConversions"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
