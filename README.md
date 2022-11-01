@@ -48,7 +48,7 @@ By default, the `git pull` command recursively fetches submodules changes, as we
 <b>(main*) » git submodule update</b>
 Submodule path 'vividus-build-system': checked out '1914c3ec0d14cb771d01245e5b0d66cd58d4e5a8'
 
-<b>(main) » git status</b>  
+<b>(main) » git status</b>
 On branch main
 Your branch is up to date with 'origin/main'.
 
