@@ -60,7 +60,7 @@ allprojects {
 
     spotless {
         format 'documentation', {
-            target '**/*.md'
+            target '**/*.md', '**/*.adoc'
 
             trimTrailingWhitespace()
             indentWithSpaces()
