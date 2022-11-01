@@ -62,6 +62,7 @@ allprojects {
         format 'documentation', {
             target '**/*.md'
 
+            trimTrailingWhitespace()
             indentWithSpaces()
             endWithNewline()
         }
