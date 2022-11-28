@@ -219,7 +219,7 @@ apply plugin: 'checkstyle'
 checkstyle {
     configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
-        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '10.4')
+        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '10.5.0')
         checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.42.0')
     }
 }
