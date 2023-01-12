@@ -59,7 +59,7 @@ def toolchainPropertyName = 'javaToolchainEnabled';
 
 def useToolchain = project.hasProperty(toolchainPropertyName) ? project.getProperty(toolchainPropertyName).toBoolean() : false
 
-ext.defaultJvmArgs = '--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED';
+ext.defaultJvmArgs = ['--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED', '--add-opens=java.base/java.nio=ALL-UNNAMED'];
 
 if (useToolchain) {
     def baselineLanguageVersion = JavaLanguageVersion.of(baselineJavaVersion.toString())
