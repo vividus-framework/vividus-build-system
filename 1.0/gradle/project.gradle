@@ -61,6 +61,7 @@ allprojects {
     spotless {
         format 'documentation', {
             target '**/*.md', '**/*.adoc'
+            targetExclude gitignorePatterns
 
             trimTrailingWhitespace()
             indentWithSpaces()
