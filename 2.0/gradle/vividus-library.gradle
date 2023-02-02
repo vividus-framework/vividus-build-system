@@ -54,7 +54,7 @@ apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-def baselineJavaVersion = JavaVersion.VERSION_11
+def baselineJavaVersion = JavaVersion.VERSION_17
 def toolchainPropertyName = 'javaToolchainEnabled';
 
 def useToolchain = project.hasProperty(toolchainPropertyName) ? project.getProperty(toolchainPropertyName).toBoolean() : false
