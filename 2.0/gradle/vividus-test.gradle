@@ -1,0 +1,228 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply from: "${gradleScriptDir}/vividus-library.gradle"
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 1, 'days'
+}
+
+
+
+spotless {
+    format 'Vividus', {
+        target '**/*.story', '**/*.steps', '**/*.table'
+        targetExclude gitignorePatterns
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+
+
+apply plugin: 'java-library-distribution'
+
+distributions {
+    main {
+        contents {
+            from(buildSystemDir) {
+                include 'scripts/*'
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            afterEvaluate {
+                if (distZip.enabled) {
+                    artifact distZip
+                }
+                if (distTar.enabled) {
+                    artifact distTar
+                }
+                if (distSourcesZip.enabled) {
+                    artifact distSourcesZip
+                }
+                if (storiesJar.enabled) {
+                    artifact storiesJar
+                }
+            }
+            pom {
+                // Reset POM attributes for test projects
+                inceptionYear = null
+                licenses.clear()
+            }
+        }
+    }
+}
+
+task storiesJar(type: Jar) {
+    archiveClassifier = 'stories'
+    from (sourceSets.main.resources) {
+        exclude 'properties/configuration.properties'
+    }
+}
+
+import org.apache.tools.ant.DirectoryScanner
+
+import java.nio.file.Paths
+
+task distSourcesZip(type: Zip) {
+    archiveClassifier = 'sources'
+    //workaround for https://issues.gradle.org/browse/GRADLE-1883
+    doFirst {
+        DirectoryScanner.defaultExcludes.each { if(it.contains('.gitignore')){DirectoryScanner.removeDefaultExclude it }}
+    }
+    from (project.getProjectDir()) {
+        exclude '.gradle/**'
+        exclude '.settings/**'
+        exclude '.classpath'
+        exclude 'bin/**'
+        exclude 'output/**'
+    }
+}
+
+distSourcesZip.enabled = false
+distTar.enabled = true
+distZip.enabled = false
+storiesJar.enabled = false
+
+
+class VividusJavaExec extends JavaExec {
+    def collectVividusProperties() {
+        project.properties.findAll({k,v -> k.startsWith('vividus.')})
+    }
+}
+
+class VividusTask extends VividusJavaExec {
+    @Input
+    String[] arguments;
+}
+
+task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vividus') {
+    description = 'Performs Vividus initialization.'
+    mainClass = 'org.vividus.runner.VividusInitializationChecker'
+    arguments = ['ignoreBeans']
+}
+check.dependsOn testVividusInitialization
+
+class StoriesExec extends VividusJavaExec {
+    @Input
+    boolean treatKnownIssuesOnlyAsPassed
+
+    @Input
+    boolean resolvePathAgainstProjectBuildDir;
+
+    @Input
+    @Optional
+    String fileToSaveExitCode;
+}
+
+tasks.withType(StoriesExec).configureEach {
+    mainClass = 'org.vividus.runner.StoriesRunner'
+    jvmArgs += defaultJvmArgs
+    doFirst {
+        environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
+        systemProperties(['vividus.output.directory': "${project.buildDir}"] + collectVividusProperties())
+    }
+    ignoreExitValue true
+    doLast {
+        def pathToExitCodeFile = project.findProperty('fileToSaveExitCode') ?: fileToSaveExitCode
+        if (pathToExitCodeFile) {
+            def pathToFile = (project.findProperty('resolvePathAgainstProjectBuildDir') ?: resolvePathAgainstProjectBuildDir)
+                    ? Paths.get("${project.buildDir}", pathToExitCodeFile)
+                    : Paths.get(pathToExitCodeFile)
+            pathToFile.toFile().write("${executionResult.get().getExitValue()}")
+            logger.lifecycle("Exit code is saved to the file: ${pathToFile}")
+        }
+        if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics")) {
+            logger.warn('\nExit value {} is ignored', executionResult.get().getExitValue())
+        }
+        else if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
+            logger.warn('\nKNOWN ISSUES ONLY: All test failures are known issues')
+        } else {
+            executionResult.get().assertNormalExitValue()
+        }
+    }
+}
+
+task runStories (dependsOn: build, type: StoriesExec, group: 'Vividus') {
+    description = 'Runs stories.'
+}
+
+task debugStories (dependsOn: assemble, type: StoriesExec, group: 'Vividus') {
+    description = 'Debug stories (all build checks are ignored).'
+}
+
+tasks.register('validateRunStatistics') {
+    dependsOn 'runStories'
+    def property = 'expectedRunStatistics';
+    def expectedResult = project.findProperty(property)
+    gradle.taskGraph.whenReady {
+        if (!expectedResult) {
+            throw new StopExecutionException("project property \"$property\" should be set")
+        }
+    }
+    doLast {
+        def slurper = new groovy.json.JsonSlurper()
+        File actualFile = new File(project.buildDir, 'statistics/statistics.json')
+        File expectedFile = new File(project.buildDir, expectedResult)
+        def actualMap = slurper.parseText(actualFile.text)
+        def expectedMap = slurper.parseText(expectedFile.text)
+        logger.warn("Expected execution statistics:\n {} actual ecxecution statistics :\n {}", expectedFile.text, actualFile.text)
+        assert expectedMap == actualMap
+    }
+}
+
+
+task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
+    description = 'Prints available steps in alphabetical order.'
+    mainClass = 'org.vividus.runner.BddStepPrinter'
+    arguments = ['file']
+}
+
+task validateKnownIssues (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
+    description = 'Validates known-issues configuration.'
+    mainClass = 'org.vividus.runner.KnownIssueValidator'
+}
+
+task countScenarios (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
+    description = 'Counts scenarios in project.'
+    mainClass = 'org.vividus.runner.BddScenariosCounter'
+}
+
+task countSteps (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
+    description = 'Counts steps in project.'
+    mainClass = 'org.vividus.runner.BddStepsCounter'
+}
+
+[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
+    task.doFirst {
+        environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
+        systemProperties(collectVividusProperties())
+        if (task.hasProperty('arguments')) {
+            task.property('arguments').each { arg ->
+                if (project.hasProperty(arg)) {
+                    args('--' + arg, project.property(arg));
+                }
+            }
+        }
+    }
+}

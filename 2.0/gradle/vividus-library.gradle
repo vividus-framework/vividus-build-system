@@ -1,0 +1,302 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+group 'org.vividus'
+
+repositories {
+    mavenLocal()
+    mavenCentral() {
+        content {
+            excludeGroup 'org.vividus'
+        }
+    }
+    maven {
+        url 'https://maven.pkg.github.com/vividus-framework/vividus'
+        credentials {
+            username 'token'
+            password '\u0067\u0068\u0070\u005f\u0046\u0064\u0049\u0070\u0044\u0044\u0072\u0043\u0073\u0074\u0034\u0054\u004b\u0079\u0030\u0057\u0077\u006e\u0071\u0069\u0052\u0070\u0048\u004a\u0041\u0066\u0037\u0071\u0066\u004a\u0031\u006a\u0050\u0032\u0077\u0034'
+        }
+        content {
+            includeGroup 'org.vividus'
+        }
+    }
+    maven {
+        url 'https://vividuscentral.jfrog.io/artifactory/releases'
+        mavenContent {
+            releasesOnly()
+        }
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+def baselineJavaVersion = JavaVersion.VERSION_11
+def toolchainPropertyName = 'javaToolchainEnabled';
+
+def useToolchain = project.hasProperty(toolchainPropertyName) ? project.getProperty(toolchainPropertyName).toBoolean() : false
+
+ext.defaultJvmArgs = ['--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED', '--add-opens=java.base/java.nio=ALL-UNNAMED'];
+
+if (useToolchain) {
+    def baselineLanguageVersion = JavaLanguageVersion.of(baselineJavaVersion.toString())
+    java {
+        toolchain {
+            languageVersion = baselineLanguageVersion
+        }
+    }
+
+    tasks.withType(JavaExec).configureEach {
+        javaLauncher = javaToolchains.launcherFor {
+            languageVersion = baselineLanguageVersion
+        }
+    }
+}
+else {
+    sourceCompatibility = baselineJavaVersion
+}
+
+tasks.withType(JavaCompile) {
+    configure(options) {
+        compilerArgs << '-Xlint'
+        encoding = 'UTF-8'
+    }
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    def testExceptionFormatKey = 'test.testLogging.exceptionFormat'
+    if (project.hasProperty(testExceptionFormatKey)) {
+        test.testLogging {
+            exceptionFormat project.property(testExceptionFormatKey)
+        }
+    }
+    jvmArgs += ['-Duser.language=en', '-Duser.country=US'] + defaultJvmArgs
+}
+
+tasks.withType(Jar) {
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+        )
+    }
+    into 'META-INF', {
+        from("$rootDir/LICENSE")
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+            'Automatic-Module-Name': "${project.group}.${project.name.replaceAll('-', '_')}"
+        )
+    }
+}
+
+tasks.withType(Javadoc) {
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+}
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            pom {
+                inceptionYear = '2019'
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+eclipse.classpath.file.whenMerged {
+    entries.removeAll {
+        (it in org.gradle.plugins.ide.eclipse.model.AbstractClasspathEntry && it.entryAttributes['gradle_used_by_scope'] == ''
+            && !it.path.contains('spotbugs-annotations')) //Gradle doesn't handle 'compileOnly' scope properly
+    }
+}
+
+
+
+apply from: "${gradleScriptDir}/jacoco.gradle"
+
+tasks.withType(Test) { testTask ->
+    def testTaskName = testTask.name;
+    if (!'test'.equals(testTaskName)) {
+        tasks.create(name: "jacoco${testTaskName.capitalize()}Report", type: JacocoReport) {
+            executionData testTask
+            sourceSets sourceSets.main
+        }
+        tasks.create(name: "jacoco${testTaskName.capitalize()}CoverageVerification", type: JacocoCoverageVerification) {
+            executionData testTask
+            sourceSets sourceSets.main
+        }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'INSTRUCTION'
+                minimum = 0.93
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.86
+            }
+        }
+    }
+}
+
+check.dependsOn tasks.withType(JacocoReport)
+check.dependsOn tasks.withType(JacocoCoverageVerification)
+
+//Additional SourceSets can be added to the jacocoOfflineSourceSets as needed by
+project.ext.jacocoOfflineSourceSets = [ 'main' ]
+task doJacocoOfflineInstrumentation(dependsOn: [ classes, project.configurations.jacocoAnt ]) {
+    inputs.files classes.outputs.files
+    File outputDir = new File(project.buildDir, 'instrumentedClasses')
+    outputs.dir outputDir
+    doFirst {
+        project.delete(outputDir)
+        ant.taskdef(
+            resource: 'org/jacoco/ant/antlib.xml',
+            classpath: project.configurations.jacocoAnt.asPath,
+            uri: 'jacoco'
+        )
+        jacocoOfflineSourceSets.each { sourceSetName ->
+            def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
+            files(sourceSets[sourceSetName].output.classesDirs).each { classesDir ->
+                if (classesDir.exists()) {
+                    ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
+                        fileset(dir: classesDir, includes: '**/*.class')
+                    }
+                    //Replace the classes dir in the test classpath with the instrumented one
+                    sourceSets.test.runtimeClasspath -= files(classesDir)
+                    sourceSets.test.runtimeClasspath = files(instrumentedClassedDir) + sourceSets.test.runtimeClasspath
+                }
+            }
+        }
+    }
+}
+test.dependsOn doJacocoOfflineInstrumentation
+
+
+
+apply plugin: 'checkstyle'
+checkstyle {
+    configDirectory = file("${buildSystemConfigDir}/checkstyle")
+    dependencies {
+        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '10.7.0')
+        checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.44.1')
+    }
+}
+
+apply plugin: 'pmd'
+pmd {
+    toolVersion = '6.54.0'
+    maxFailures = 21
+    ruleSets = []
+}
+pmdMain {
+    ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdMain-ruleset.xml")
+}
+tasks.withType(Pmd) {
+    if (it.name.endsWith('Test')) {
+        it.ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdTest-ruleset.xml")
+    }
+}
+
+buildscript {
+    dependencies {
+        classpath(group: 'com.github.spotbugs.snom', name: 'spotbugs-gradle-plugin', version: '5.0.13')
+    }
+}
+apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
+ext {
+    spotbugsVersion = '4.7.3'
+}
+spotbugs.toolVersion = spotbugsVersion
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    omitVisitors = [
+        'LostLoggerDueToWeakReference',
+        'FindReturnRef'
+    ]
+    if (it.name.endsWith('Test')) {
+        omitVisitors.add('MethodReturnCheck')
+    }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+spotless {
+    java {
+        def origin = 'origin/master'
+        if (new File(gitRepo, 'refs/remotes/' + origin).exists()) {
+            ratchetFrom origin
+        }
+        licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
+        importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
+        formatAnnotations()
+    }
+    format 'VividusPlugins', {
+        target '**/*.steps'
+        targetExclude gitignorePatterns
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+
+
+buildscript {
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.31.0')
+    }
+}
+apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
+artifactory {
+    publish {
+        defaults {
+            publications('maven')
+        }
+        repoKey = System.getProperty(project.version.endsWith('SNAPSHOT') ? 'artifactory.publish.snapshotRepoKey' : 'artifactory.publish.releaseRepoKey') ?: System.getProperty('artifactory.publish.repoKey')
+        contextUrl = System.getProperty('artifactory.publish.contextUrl')
+    }
+}
