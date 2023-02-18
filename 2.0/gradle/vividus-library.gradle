@@ -34,12 +34,6 @@ repositories {
         }
     }
     maven {
-        url 'https://vividuscentral.jfrog.io/artifactory/releases'
-        mavenContent {
-            releasesOnly()
-        }
-    }
-    maven {
         url 'https://jitpack.io'
     }
 }
