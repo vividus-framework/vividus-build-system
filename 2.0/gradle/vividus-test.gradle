@@ -194,7 +194,7 @@ tasks.register('validateRunStatistics') {
 
 task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
     description = 'Prints available steps in alphabetical order.'
-    mainClass = 'org.vividus.runner.BddStepPrinter'
+    mainClass = 'org.vividus.runner.StepsPrinter'
     arguments = ['file']
 }
 
@@ -205,12 +205,12 @@ task validateKnownIssues (dependsOn: build, type: VividusJavaExec, group: 'Vivid
 
 task countScenarios (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
     description = 'Counts scenarios in project.'
-    mainClass = 'org.vividus.runner.BddScenariosCounter'
+    mainClass = 'org.vividus.runner.ScenariosCounter'
 }
 
 task countSteps (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
     description = 'Counts steps in project.'
-    mainClass = 'org.vividus.runner.BddStepsCounter'
+    mainClass = 'org.vividus.runner.StepsCounter'
 }
 
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
