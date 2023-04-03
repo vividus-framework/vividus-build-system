@@ -116,13 +116,6 @@ class VividusTask extends VividusJavaExec {
     String[] arguments;
 }
 
-task testVividusInitialization (dependsOn: test, type: VividusTask, group: 'Vividus') {
-    description = 'Performs Vividus initialization.'
-    mainClass = 'org.vividus.runner.VividusInitializationChecker'
-    arguments = ['ignoreBeans']
-}
-check.dependsOn testVividusInitialization
-
 class StoriesExec extends VividusJavaExec {
     @Input
     boolean treatKnownIssuesOnlyAsPassed
@@ -163,11 +156,13 @@ tasks.withType(StoriesExec).configureEach {
     }
 }
 
-task runStories (dependsOn: build, type: StoriesExec, group: 'Vividus') {
+ext.VIVIDUS_TASK_GROUP = 'VIVIDUS'
+
+task runStories (dependsOn: build, type: StoriesExec, group: VIVIDUS_TASK_GROUP) {
     description = 'Runs stories.'
 }
 
-task debugStories (dependsOn: assemble, type: StoriesExec, group: 'Vividus') {
+task debugStories (dependsOn: assemble, type: StoriesExec, group: VIVIDUS_TASK_GROUP) {
     description = 'Debug stories (all build checks are ignored).'
 }
 
@@ -192,25 +187,39 @@ tasks.register('validateRunStatistics') {
 }
 
 
-task printSteps (dependsOn: build, type: VividusTask, group: 'Vividus') {
+task printSteps (dependsOn: build, type: VividusTask, group: VIVIDUS_TASK_GROUP) {
     description = 'Prints available steps in alphabetical order.'
     mainClass = 'org.vividus.runner.StepsPrinter'
     arguments = ['file']
 }
 
-task validateKnownIssues (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
-    description = 'Validates known-issues configuration.'
-    mainClass = 'org.vividus.runner.KnownIssueValidator'
-}
-
-task countScenarios (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
+task countScenarios (dependsOn: build, type: VividusJavaExec, group: VIVIDUS_TASK_GROUP) {
     description = 'Counts scenarios in project.'
     mainClass = 'org.vividus.runner.ScenariosCounter'
 }
 
-task countSteps (dependsOn: build, type: VividusJavaExec, group: 'Vividus') {
+task countSteps (dependsOn: build, type: VividusJavaExec, group: VIVIDUS_TASK_GROUP) {
     description = 'Counts steps in project.'
     mainClass = 'org.vividus.runner.StepsCounter'
+}
+
+tasks.register('validateKnownIssues', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Validates configuration of known issues.'
+    mainClass = 'org.vividus.runner.KnownIssueValidator'
+}
+
+tasks.register('testVividusInitialization', VividusTask) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Tests VIVIDUS initialization.'
+    mainClass = 'org.vividus.runner.VividusInitializationChecker'
+    arguments = ['ignoreBeans']
+}
+
+check.configure {
+    dependsOn = [validateKnownIssues, testVividusInitialization]
 }
 
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->

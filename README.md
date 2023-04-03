@@ -88,6 +88,7 @@ where dependencies are downloaded from.
     Most likely this change won't affect any users, because VIVIDUS Artifactory was used as a backup storage of VIVIDUS
     releases up to `0.4.5` version. The primary storage is GitHub Packages.
 
+1. Correcness of the file with known issues configuration (`known-issues.json`) is checked at test project build phase.
 <details>
   <summary>The following list conatins breaking changes that may affect people who develop own VIVIDUS plugins and modules.</summary>
 
