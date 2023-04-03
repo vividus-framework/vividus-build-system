@@ -36,5 +36,5 @@ buildscript {
 }
 apply plugin: io.spring.nohttp.gradle.NoHttpPlugin
 nohttp {
-    source.excludes = ['**/src/test/**', '**/*.min.js'] + gitignorePatterns
+    source.excludes = ['**/src/test/**'] + gitignorePatterns
 }

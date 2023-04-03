@@ -101,4 +101,8 @@ where dependencies are downloaded from.
 
       If you use VIVIDUS Artifactory as a caching proxy to download dependencies, then you should configure repositories
       storing the required dependencies on your side.
+
+  1. `**/*.min.js` files are removed from exclusions of static code check ensuring that `https://` is used for everything.
+
+      Fine-tuned exclusions for custom files should be done at the project level.
 </details>
