@@ -134,6 +134,12 @@
         <property name="requiredParameters" value="since,forRemoval"/>
     </module>
     <module name="AnnotationLocation"/>
+    <module name="AnnotationLocation">
+        <property name="tokens" value="METHOD_DEF"/>
+        <property name="allowSamelineMultipleAnnotations" value="false"/>
+        <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
+        <property name="allowSamelineParameterizedAnnotation" value="false"/>
+    </module>
     <module name="ClassTypeParameterName"/>
     <module name="MethodTypeParameterName"/>
     <module name="InterfaceTypeParameterName"/>
