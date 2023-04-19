@@ -65,6 +65,8 @@ The build system can be cloned as a regular Git repository to any location. Afte
 
 ## Migrating from `1.0` to `2.0`
 
+Build System 1.0 is not maintained anymore and is going to be retired. All users are recommended to migrate to Build System 2.0.
+
 ### How to switch to Build System 2.0
 1. Sync Build System:
     - [Internal](#option-1-internal-recommened): follow the [guide above](#update-from-the-vividus-build-system-remote).
