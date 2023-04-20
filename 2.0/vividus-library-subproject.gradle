@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-ext.buildSystemConfigDir = new File(buildscript.sourceFile.parentFile, 'config')
-ext.gradleScriptDir = new File(buildscript.sourceFile.parentFile, 'gradle')
+ext.rootScriptDir =  buildscript.sourceFile.parentFile
+ext.gradleScriptDir = new File(rootScriptDir, 'gradle')
+
 apply from: "${gradleScriptDir}/vividus-library.gradle"
 
 java {

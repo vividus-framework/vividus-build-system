@@ -91,6 +91,9 @@ where dependencies are downloaded from.
     releases up to `0.4.5` version. The primary storage is GitHub Packages.
 
 1. Correcness of the file with known issues configuration (`known-issues.json`) is checked at test project build phase.
+1. There is no longer a requirement to define the extra property `ext.buildSystemDir`. The mentioned property can be
+safely removed from the `build.gradle` file located in the test project root directory.
+
 <details>
   <summary>The following list conatins breaking changes that may affect people who develop own VIVIDUS plugins and modules.</summary>
 

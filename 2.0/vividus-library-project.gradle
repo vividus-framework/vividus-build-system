@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-def rootScriptDir =  buildscript.sourceFile.parentFile
-ext.gradleScriptDir = new File(buildscript.sourceFile.parentFile, 'gradle')
+ext.rootScriptDir =  buildscript.sourceFile.parentFile
+ext.gradleScriptDir = new File(rootScriptDir, 'gradle')
+
 apply from: "${gradleScriptDir}/project.gradle"
 apply from: "${rootScriptDir}/vividus-library-subproject.gradle"

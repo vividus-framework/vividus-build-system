@@ -40,7 +40,7 @@ apply plugin: 'java-library-distribution'
 distributions {
     main {
         contents {
-            from(buildSystemDir) {
+            from(rootScriptDir) {
                 include 'scripts/*'
             }
         }
