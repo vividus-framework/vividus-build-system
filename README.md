@@ -83,7 +83,7 @@ This is the list of breaking changes between major versions `1.0` and `2.0`. It 
 existing automated tests and infrastructre for them to use Build System 2.0.
 
 1. Java 17+ is required: make sure to update all environments (local, CI, etc.) where tests are developed and run to use
-[Java 17](https://adoptium.net/temurin/releases/?version=17) or higher.
+[Java 17](https://adoptium.net/temurin/releases/?version=17) or higher.<br/>Also it's needed to check the IDE used to develop tests supports Java 17 or higher.
 1. [VIVIDUS Artifactory](https://vividuscentral.jfrog.io/artifactory/releases) is removed from the list of repositories
 where dependencies are downloaded from.
 
