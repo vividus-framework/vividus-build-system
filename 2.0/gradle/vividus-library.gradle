@@ -115,6 +115,9 @@ jar {
 
 tasks.withType(Javadoc) {
     options.addBooleanOption('Xdoclint:all,-missing', true)
+
+    // See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363) for information about the -Werror option.
+    options.addBooleanOption('Werror', true)
 }
 
 apply plugin: 'maven-publish'
