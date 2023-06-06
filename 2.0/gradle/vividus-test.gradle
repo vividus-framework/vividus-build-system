@@ -16,7 +16,7 @@
 
 apply from: "${gradleScriptDir}/vividus-library.gradle"
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.cacheChangingModulesFor 1, 'days'
 }
 
@@ -73,7 +73,7 @@ publishing {
     }
 }
 
-task storiesJar(type: Jar) {
+tasks.register('storiesJar', Jar) {
     archiveClassifier = 'stories'
     from (sourceSets.main.resources) {
         exclude 'properties/configuration.properties'
@@ -84,7 +84,7 @@ import org.apache.tools.ant.DirectoryScanner
 
 import java.nio.file.Paths
 
-task distSourcesZip(type: Zip) {
+tasks.register('distSourcesZip', Zip) {
     archiveClassifier = 'sources'
     //workaround for https://issues.gradle.org/browse/GRADLE-1883
     doFirst {
@@ -158,11 +158,15 @@ tasks.withType(StoriesExec).configureEach {
 
 ext.VIVIDUS_TASK_GROUP = 'VIVIDUS'
 
-task runStories (dependsOn: build, type: StoriesExec, group: VIVIDUS_TASK_GROUP) {
+tasks.register('runStories', StoriesExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
     description = 'Runs stories.'
 }
 
-task debugStories (dependsOn: assemble, type: StoriesExec, group: VIVIDUS_TASK_GROUP) {
+tasks.register('debugStories', StoriesExec) {
+    dependsOn = [assemble]
+    group = VIVIDUS_TASK_GROUP
     description = 'Debug stories (all build checks are ignored).'
 }
 
@@ -187,18 +191,24 @@ tasks.register('validateRunStatistics') {
 }
 
 
-task printSteps (dependsOn: build, type: VividusTask, group: VIVIDUS_TASK_GROUP) {
+tasks.register('printSteps', VividusTask) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
     description = 'Prints available steps in alphabetical order.'
     mainClass = 'org.vividus.runner.StepsPrinter'
     arguments = ['file']
 }
 
-task countScenarios (dependsOn: build, type: VividusJavaExec, group: VIVIDUS_TASK_GROUP) {
+tasks.register('countScenarios', VividusJavaExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
     description = 'Counts scenarios in project.'
     mainClass = 'org.vividus.runner.ScenariosCounter'
 }
 
-task countSteps (dependsOn: build, type: VividusJavaExec, group: VIVIDUS_TASK_GROUP) {
+tasks.register('countSteps', VividusJavaExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
     description = 'Counts steps in project.'
     mainClass = 'org.vividus.runner.StepsCounter'
 }
