@@ -75,14 +75,14 @@ else {
     sourceCompatibility = baselineJavaVersion
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     configure(options) {
         compilerArgs << '-Xlint'
         encoding = 'UTF-8'
     }
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
     def testExceptionFormatKey = 'test.testLogging.exceptionFormat'
     if (project.hasProperty(testExceptionFormatKey)) {
@@ -93,7 +93,7 @@ tasks.withType(Test) {
     jvmArgs += ['-Duser.language=en', '-Duser.country=US'] + defaultJvmArgs
 }
 
-tasks.withType(Jar) {
+tasks.withType(Jar).configureEach {
     manifest {
         attributes(
             'Implementation-Title': project.name,
@@ -113,7 +113,7 @@ jar {
     }
 }
 
-tasks.withType(Javadoc) {
+tasks.withType(Javadoc).configureEach {
     options.addBooleanOption('Xdoclint:all,-missing', true)
 
     // See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363) for information about the -Werror option.
@@ -153,11 +153,11 @@ apply from: "${gradleScriptDir}/jacoco.gradle"
 tasks.withType(Test) { testTask ->
     def testTaskName = testTask.name;
     if (!'test'.equals(testTaskName)) {
-        tasks.create(name: "jacoco${testTaskName.capitalize()}Report", type: JacocoReport) {
+        tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport) {
             executionData testTask
             sourceSets sourceSets.main
         }
-        tasks.create(name: "jacoco${testTaskName.capitalize()}CoverageVerification", type: JacocoCoverageVerification) {
+        tasks.register("jacoco${testTaskName.capitalize()}CoverageVerification", JacocoCoverageVerification) {
             executionData testTask
             sourceSets sourceSets.main
         }
@@ -232,7 +232,7 @@ pmd {
 pmdMain {
     ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdMain-ruleset.xml")
 }
-tasks.withType(Pmd) {
+tasks.withType(Pmd).configureEach {
     if (it.name.endsWith('Test')) {
         it.ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdTest-ruleset.xml")
     }
@@ -248,7 +248,7 @@ ext {
     spotbugsVersion = '4.7.3'
 }
 spotbugs.toolVersion = spotbugsVersion
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
     omitVisitors = [
         'LostLoggerDueToWeakReference',
         'FindReturnRef'
