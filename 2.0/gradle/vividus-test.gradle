@@ -228,11 +228,19 @@ tasks.register('testVividusInitialization', VividusTask) {
     arguments = ['ignoreBeans']
 }
 
+tasks.register('replaceDeprecatedSteps', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Replace deprecated steps in stories and composite steps.'
+    mainClass = 'org.vividus.runner.DeprecatedStepsReplacer'
+    args = ['--resourceLocation', sourceSets.main.resources.srcDirs.first().absolutePath]
+}
+
 check.configure {
     dependsOn = [validateKnownIssues, testVividusInitialization]
 }
 
-[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps].each { task ->
+[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps].each { task ->
     task.doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         systemProperties(collectVividusProperties())
