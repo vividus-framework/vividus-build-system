@@ -184,7 +184,8 @@ check.dependsOn tasks.withType(JacocoCoverageVerification)
 
 //Additional SourceSets can be added to the jacocoOfflineSourceSets as needed by
 project.ext.jacocoOfflineSourceSets = [ 'main' ]
-task doJacocoOfflineInstrumentation(dependsOn: [ classes, project.configurations.jacocoAnt ]) {
+tasks.register('doJacocoOfflineInstrumentation') {
+    dependsOn = [classes, project.configurations.jacocoAnt]
     inputs.files classes.outputs.files
     File outputDir = new File(project.buildDir, 'instrumentedClasses')
     outputs.dir outputDir
