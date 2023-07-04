@@ -113,7 +113,7 @@ class VividusJavaExec extends JavaExec {
 
 class VividusTask extends VividusJavaExec {
     @Input
-    String[] arguments;
+    String[] arguments
 }
 
 class StoriesExec extends VividusJavaExec {
@@ -121,11 +121,11 @@ class StoriesExec extends VividusJavaExec {
     boolean treatKnownIssuesOnlyAsPassed
 
     @Input
-    boolean resolvePathAgainstProjectBuildDir;
+    boolean resolvePathAgainstProjectBuildDir
 
     @Input
     @Optional
-    String fileToSaveExitCode;
+    String fileToSaveExitCode
 }
 
 tasks.withType(StoriesExec).configureEach {
@@ -172,7 +172,7 @@ tasks.register('debugStories', StoriesExec) {
 
 tasks.register('validateRunStatistics') {
     dependsOn 'runStories'
-    def property = 'expectedRunStatistics';
+    def property = 'expectedRunStatistics'
     def expectedResult = project.findProperty(property)
     gradle.taskGraph.whenReady {
         if (!expectedResult) {
@@ -247,7 +247,7 @@ check.configure {
         if (task.hasProperty('arguments')) {
             task.property('arguments').each { arg ->
                 if (project.hasProperty(arg)) {
-                    args('--' + arg, project.property(arg));
+                    args('--' + arg, project.property(arg))
                 }
             }
         }
