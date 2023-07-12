@@ -290,7 +290,7 @@ spotless {
 
 buildscript {
     dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.32.0')
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '5.0.2')
     }
 }
 apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
@@ -299,7 +299,9 @@ artifactory {
         defaults {
             publications('maven')
         }
-        repoKey = System.getProperty(project.version.endsWith('SNAPSHOT') ? 'artifactory.publish.snapshotRepoKey' : 'artifactory.publish.releaseRepoKey') ?: System.getProperty('artifactory.publish.repoKey')
+        repository {
+            repoKey = System.getProperty(project.version.endsWith('SNAPSHOT') ? 'artifactory.publish.snapshotRepoKey' : 'artifactory.publish.releaseRepoKey') ?: System.getProperty('artifactory.publish.repoKey')
+        }
         contextUrl = System.getProperty('artifactory.publish.contextUrl')
     }
 }
