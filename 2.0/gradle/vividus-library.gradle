@@ -72,7 +72,9 @@ if (useToolchain) {
     }
 }
 else {
-    sourceCompatibility = baselineJavaVersion
+    java {
+        sourceCompatibility = baselineJavaVersion
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
