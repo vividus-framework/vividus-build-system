@@ -44,11 +44,6 @@
             <property name="methodReportLevel" value="24"/>
         </properties>
     </rule>
-    <rule ref="category/java/design.xml/ImmutableField">
-        <properties>
-            <property name="ignoredAnnotations" value="javax.inject.Inject" />
-        </properties>
-    </rule>
 
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentContent"/>
