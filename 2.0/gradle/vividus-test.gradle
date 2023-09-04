@@ -236,11 +236,19 @@ tasks.register('replaceDeprecatedSteps', VividusJavaExec) {
     args = ['--resourceLocation', sourceSets.main.resources.srcDirs.first().absolutePath]
 }
 
+tasks.register('replaceDeprecatedProperties', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Replace deprecated properties.'
+    mainClass = 'org.vividus.runner.DeprecatedPropertiesReplacer'
+    args = ['--propertiesRootDirectory', sourceSets.main.resources.srcDirs.first().absolutePath + '/properties']
+}
+
 check.configure {
     dependsOn = [validateKnownIssues, testVividusInitialization]
 }
 
-[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps].each { task ->
+[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties].each { task ->
     task.doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         systemProperties(collectVividusProperties())
