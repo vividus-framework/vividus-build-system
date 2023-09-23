@@ -80,7 +80,7 @@ else {
 
 tasks.withType(JavaCompile).configureEach {
     configure(options) {
-        compilerArgs << '-Xlint'
+        compilerArgs += ['-Xlint', '-parameters']
         encoding = 'UTF-8'
     }
 }
