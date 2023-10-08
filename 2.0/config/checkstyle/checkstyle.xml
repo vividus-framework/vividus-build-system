@@ -16,17 +16,17 @@
     <module name="OneStatementPerLine"/>
     <module name="IllegalImport">
       <property name="regexp" value="true" />
-      <property name="illegalClasses" value="^junit\.framework\..+,^org\.junit\.Assert\..+,^org\.junit\.Assume\.assumeThat,^org\.junit\.rules\.ExpectedException,^org\.hamcrest\.CoreMatchers.*" />
+      <property name="illegalClasses" value="^junit\.framework\..+,^org\.junit\.Assert\..+,^org\.junit\.Assume\.assumeThat,^org\.junit\.rules\.ExpectedException,^org\.hamcrest\.CoreMatchers.*,^sun\.misc\.Unsafe" />
     </module>
     <module name="IllegalImport">
       <property name="id" value="bannedGuavaPreconditionsInFavorOfApacheValidate" />
       <property name="regexp" value="true" />
-      <property name="illegalClasses" value="^com\.google\.common\.base\.Preconditions.*" />
+      <property name="illegalClasses" value="^com\.google\.common\.base\.Preconditions.*,^sun\.misc\.Unsafe" />
     </module>
     <module name="IllegalImport">
       <property name="id" value="bannedStringUtilsOtherThanApacheCommonsLang3" />
       <property name="regexp" value="true" />
-      <property name="illegalClasses" value="^.+(?&lt;!org\.apache\.commons\.lang3\.)StringUtils.*" />
+      <property name="illegalClasses" value="^.+(?&lt;!org\.apache\.commons\.lang3\.)StringUtils.*,^sun\.misc\.Unsafe" />
     </module>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
