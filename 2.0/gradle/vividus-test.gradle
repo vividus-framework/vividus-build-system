@@ -133,16 +133,16 @@ tasks.withType(StoriesExec).configureEach {
     jvmArgs += defaultJvmArgs
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
-        systemProperties(['vividus.output.directory': "${project.buildDir}"] + collectVividusProperties())
+        systemProperties(['vividus.output.directory': layout.buildDirectory.get().asFile.absolutePath] + collectVividusProperties())
     }
     ignoreExitValue true
     doLast {
         def pathToExitCodeFile = project.findProperty('fileToSaveExitCode') ?: fileToSaveExitCode
         if (pathToExitCodeFile) {
             def pathToFile = (project.findProperty('resolvePathAgainstProjectBuildDir') ?: resolvePathAgainstProjectBuildDir)
-                    ? Paths.get("${project.buildDir}", pathToExitCodeFile)
-                    : Paths.get(pathToExitCodeFile)
-            pathToFile.toFile().write("${executionResult.get().getExitValue()}")
+                    ? layout.buildDirectory.file(pathToExitCodeFile).get().asFile
+                    : file(pathToExitCodeFile)
+            pathToFile.write("${executionResult.get().getExitValue()}")
             logger.lifecycle("Exit code is saved to the file: ${pathToFile}")
         }
         if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics")) {
@@ -181,8 +181,8 @@ tasks.register('validateRunStatistics') {
     }
     doLast {
         def slurper = new groovy.json.JsonSlurper()
-        File actualFile = new File(project.buildDir, 'statistics/statistics.json')
-        File expectedFile = new File(project.buildDir, expectedResult)
+        File actualFile = layout.buildDirectory.file('statistics/statistics.json').get().asFile
+        File expectedFile = layout.buildDirectory.file(expectedResult).get().asFile
         def actualMap = slurper.parseText(actualFile.text)
         def expectedMap = slurper.parseText(expectedFile.text)
         logger.warn("Expected execution statistics:\n {} actual ecxecution statistics :\n {}", expectedFile.text, actualFile.text)
