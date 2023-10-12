@@ -187,7 +187,7 @@ tasks.register('checkDependenciesConsistency') {
             def dependenciesWithVersions = dependencies.findAll {
                 groupMatcher.call(it) && it.version != null && !it.name.equals('vividus-bom')
             }.collect { it.name }
-            
+
             if (!dependenciesWithVersions.isEmpty()) {
                 throw new GradleException('Versions for the following dependencies should be removed as you use '
                     + '\'vividus-bom\' dependency in project dependencies configuration: ' + dependenciesWithVersions.join(', '))
@@ -198,7 +198,7 @@ tasks.register('checkDependenciesConsistency') {
         }
 
         ext.vividusVersion = vividusLib.version
-   
+
         def dependenciesWithInvalidVersions = dependencies.findAll {
             groupMatcher.call(it) && !vividusVersion.equals(it.version)
         }.collect { it.name }
