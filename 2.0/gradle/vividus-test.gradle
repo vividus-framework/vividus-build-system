@@ -158,6 +158,58 @@ tasks.withType(StoriesExec).configureEach {
 
 ext.VIVIDUS_TASK_GROUP = 'VIVIDUS'
 
+tasks.register('checkDependenciesConsistency') {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Ensures consistency of VIVIDUS dependencies in the project.'
+
+    doFirst {
+        def dependencies = project.configurations.implementation.allDependencies;
+        def groupMatcher = { it.group.equals('org.vividus') }
+        def nameMatcher = { dependency, targetName ->
+            groupMatcher.call(dependency) && dependency.name.equals(targetName)
+        }
+
+        def vividusLib = dependencies.find { nameMatcher.call(it, 'vividus') }
+        if (vividusLib == null) {
+            throw new GradleException('The mandatory \'vividus\' dependency is missing in project dependencies'
+                + ' configuration.')
+        }
+
+        def vividusBomLib = dependencies.find { nameMatcher.call(it, 'vividus-bom') }
+        if (vividusBomLib != null) {
+            def vividusBomVersion = vividusBomLib.version
+            if (vividusBomVersion == null) {
+                throw new GradleException('Please specify version for \'vividus-bom\' dependency in project'
+                    + ' dependencies configuration.')
+            }
+
+            def dependenciesWithVersions = dependencies.findAll {
+                groupMatcher.call(it) && it.version != null && !it.name.equals('vividus-bom')
+            }.collect { it.name }
+            
+            if (!dependenciesWithVersions.isEmpty()) {
+                throw new GradleException('Versions for the following dependencies should be removed as you use '
+                    + '\'vividus-bom\' dependency in project dependencies configuration: ' + dependenciesWithVersions.join(', '))
+            }
+
+            ext.vividusVersion = vividusBomVersion
+            return
+        }
+
+        ext.vividusVersion = vividusLib.version
+   
+        def dependenciesWithInvalidVersions = dependencies.findAll {
+            groupMatcher.call(it) && !vividusVersion.equals(it.version)
+        }.collect { it.name }
+
+        if (!dependenciesWithInvalidVersions.isEmpty()) {
+            throw new GradleException("The following dependencies must be of ${vividusVersion} version: "
+                + dependenciesWithInvalidVersions.join(', '))
+        }
+    }
+}
+
 tasks.register('runStories', StoriesExec) {
     dependsOn = [build]
     group = VIVIDUS_TASK_GROUP
@@ -245,7 +297,7 @@ tasks.register('replaceDeprecatedProperties', VividusJavaExec) {
 }
 
 check.configure {
-    dependsOn = [validateKnownIssues, testVividusInitialization]
+    dependsOn = [checkDependenciesConsistency, validateKnownIssues, testVividusInitialization]
 }
 
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties].each { task ->
