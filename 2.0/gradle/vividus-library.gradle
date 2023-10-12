@@ -190,7 +190,7 @@ project.ext.jacocoOfflineSourceSets = [ 'main' ]
 tasks.register('doJacocoOfflineInstrumentation') {
     dependsOn = [classes, project.configurations.jacocoAnt]
     inputs.files classes.outputs.files
-    File outputDir = new File(project.buildDir, 'instrumentedClasses')
+    File outputDir = layout.buildDirectory.dir('instrumentedClasses').get().asFile
     outputs.dir outputDir
     doFirst {
         project.delete(outputDir)
