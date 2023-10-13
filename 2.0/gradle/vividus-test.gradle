@@ -193,11 +193,11 @@ tasks.register('checkDependenciesConsistency') {
                     + '\'vividus-bom\' dependency in project dependencies configuration: ' + dependenciesWithVersions.join(', '))
             }
 
-            ext.vividusVersion = vividusBomVersion
+            project.ext.vividusVersion = vividusBomVersion
             return
         }
 
-        ext.vividusVersion = vividusLib.version
+        project.ext.vividusVersion = vividusLib.version
 
         def dependenciesWithInvalidVersions = dependencies.findAll {
             groupMatcher.call(it) && !vividusVersion.equals(it.version)
