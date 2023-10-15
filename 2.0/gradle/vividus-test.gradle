@@ -128,6 +128,13 @@ class StoriesExec extends VividusJavaExec {
     String fileToSaveExitCode
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+            '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+            '--add-opens=java.base/java.util=ALL-UNNAMED'
+    ] + defaultJvmArgs
+}
+
 tasks.withType(StoriesExec).configureEach {
     mainClass = 'org.vividus.runner.StoriesRunner'
     jvmArgs += defaultJvmArgs
