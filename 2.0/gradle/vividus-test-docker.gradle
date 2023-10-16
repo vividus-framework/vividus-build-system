@@ -31,7 +31,7 @@ tasks.register('copyProjectLibrary', Copy) {
     into layout.buildDirectory.dir('docker/libs')
 }
 
-tasks.register('createDockerfile', com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+tasks.register('createTestsDockerfile', com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
     dependsOn = [copyProjectLibrary]
     doFirst {
         from("vividus/vividus:${project.ext.vividusVersion}")
@@ -40,7 +40,7 @@ tasks.register('createDockerfile', com.bmuschko.gradle.docker.tasks.image.Docker
 }
 
 tasks.register('buildTestsImage', com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
-    dependsOn = [createDockerfile]
+    dependsOn = [createTestsDockerfile]
 
     def repositoryPath = getProperty('DOCKER_REPOSITORY_PATH', 'docker.repository-path')
     if (repositoryPath == null) {
