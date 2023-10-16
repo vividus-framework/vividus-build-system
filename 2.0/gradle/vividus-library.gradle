@@ -255,7 +255,8 @@ spotbugs.toolVersion = spotbugsVersion
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
     omitVisitors = [
         'LostLoggerDueToWeakReference',
-        'FindReturnRef'
+        'FindReturnRef',
+        'DontReusePublicIdentifiers'
     ]
     if (it.name.endsWith('Test')) {
         omitVisitors.add('MethodReturnCheck')
