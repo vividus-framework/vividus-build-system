@@ -42,36 +42,40 @@ tasks.register('createTestsDockerfile', com.bmuschko.gradle.docker.tasks.image.D
 tasks.register('buildTestsImage', com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
     dependsOn = [createTestsDockerfile]
 
-    def repositoryPath = getProperty('DOCKER_REPOSITORY_PATH', 'docker.repository-path')
-    if (repositoryPath == null) {
-        throw new StopExecutionException('Please set repository path using \'docker.repository-path\' gradle property'
-            + ' or \'DOCKER_REPOSITORY_PATH\' environemnt variable')
-    }
+    doFirst {
+        def repositoryPath = getProperty('DOCKER_REPOSITORY_PATH', 'docker.repository-path')
+        if (repositoryPath == null) {
+            throw new StopExecutionException('Please set repository path using \'docker.repository-path\' gradle property'
+                + ' or \'DOCKER_REPOSITORY_PATH\' environemnt variable')
+        }
 
-    images.add("${repositoryPath}/${project.name}:${project.version}")
+        images.add("${repositoryPath}/${project.name}:${project.version}")
+    }
 }
 
 tasks.register('pushTestsImage', com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
     dependsOn = [buildTestsImage]
     images = buildTestsImage.images
 
-    def usernameVarKey = 'DOCKER_REGISTRY_USERNAME'
-    def passwordVarKey = 'DOCKER_REGISTRY_PASSWORD'
+    doFirst {
+        def usernameVarKey = 'DOCKER_REGISTRY_USERNAME'
+        def passwordVarKey = 'DOCKER_REGISTRY_PASSWORD'
 
-    def registryUsername = System.getenv(usernameVarKey)
-    def registryPassword = System.getenv(passwordVarKey)
+        def registryUsername = System.getenv(usernameVarKey)
+        def registryPassword = System.getenv(passwordVarKey)
 
-    if (registryUsername != null && registryPassword == null
-            || registryUsername == null && registryPassword != null) {
-        def args = registryUsername == null ? [passwordVarKey, usernameVarKey]
-            : [usernameVarKey, passwordVarKey]
-        throw new StopExecutionException("Environment variable ${args[0]} is set, but ${args[1]} is not.")
-    }
+        if (registryUsername != null && registryPassword == null
+                || registryUsername == null && registryPassword != null) {
+            def args = registryUsername == null ? [passwordVarKey, usernameVarKey]
+                : [usernameVarKey, passwordVarKey]
+            throw new StopExecutionException("Environment variable ${args[0]} is set, but ${args[1]} is not.")
+        }
 
-    registryCredentials {
-        url = getProperty('DOCKER_REGISTRY_URL', 'docker.registry-url')
-        username = registryUsername
-        password = registryPassword
+        registryCredentials {
+            url = getProperty('DOCKER_REGISTRY_URL', 'docker.registry-url')
+            username = registryUsername
+            password = registryPassword
+        }
     }
 }
 
