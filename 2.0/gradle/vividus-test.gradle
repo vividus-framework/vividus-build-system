@@ -118,7 +118,8 @@ class VividusTask extends VividusJavaExec {
 
 class StoriesExec extends VividusJavaExec {
     @Input
-    boolean treatKnownIssuesOnlyAsPassed
+    @Option(option = 'treat-known-issues-only-as-passed', description = 'Enables treating of known issues as positive result for stories execution')
+    boolean treatKnownIssuesOnlyAsPassed = false
 
     @Input
     boolean resolvePathAgainstProjectBuildDir
