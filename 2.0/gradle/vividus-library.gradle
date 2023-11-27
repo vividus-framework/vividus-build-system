@@ -291,7 +291,7 @@ spotless {
 
 buildscript {
     dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '5.1.10')
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '5.1.11')
     }
 }
 apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
