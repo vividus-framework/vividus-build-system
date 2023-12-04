@@ -154,5 +154,5 @@ then
     cd ..
     rm -rf logs
     rm -rf output/allure-results
-    java --add-exports=java.desktop/sun.awt.image=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED -cp $PATH_TO_ARTIFACT/classes:$PATH_TO_ARTIFACT/lib/* ${PROFILE:+ -Dprofile="$PROFILE"} ${ENCODING:+ -Dfile.encoding="$ENCODING"} $MAIN_CLASS
+    java --add-exports=java.desktop/sun.awt.image=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED -cp $PATH_TO_ARTIFACT/classes:$PATH_TO_ARTIFACT/lib/* ${PROFILE:+ -Dprofile="$PROFILE"} ${ENCODING:+ -Dfile.encoding="$ENCODING"} $MAIN_CLASS
 fi
