@@ -52,7 +52,6 @@
 
     <rule ref="category/java/errorprone.xml">
         <exclude name="NonSerializableClass"/>
-        <exclude name="DataflowAnomalyAnalysis"/>
         <exclude name="UseLocaleWithCaseConversions"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
