@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- def buildSystemConfigDir = new File(rootScriptDir, 'config')
+ext.buildSystemConfigDir = new File(rootScriptDir, 'config')
 
 group 'org.vividus'
 
@@ -278,7 +278,6 @@ spotless {
         if (new File(gitRepo, 'refs/remotes/' + origin).exists()) {
             ratchetFrom origin
         }
-        licenseHeaderFile "${buildSystemConfigDir}/spotless/spotless.license.java"
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
         formatAnnotations().removeTypeAnnotation('NotNull')
         removeUnusedImports()
