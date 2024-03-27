@@ -10,6 +10,9 @@
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/>
+
+        <!-- Starting from PMD 7.0.0 the rule generates too many false-ppsitives -->
+        <exclude name="LooseCoupling"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml">
@@ -23,6 +26,7 @@
         <exclude name="OnlyOneReturn"/>
         <exclude name="ShortVariable"/>
         <exclude name="TooManyStaticImports"/>
+        <exclude name="UseExplicitTypes"/>
     </rule>
     <rule ref="category/java/codestyle.xml/ShortClassName">
         <properties>

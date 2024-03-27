@@ -8,6 +8,9 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AccessorMethodGeneration"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
+
+        <!-- Starting from PMD 7.0.0 the rule generates too many false-ppsitives -->
+        <exclude name="LooseCoupling"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml">
