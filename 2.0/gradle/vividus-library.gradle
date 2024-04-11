@@ -254,7 +254,6 @@ ext {
 spotbugs.toolVersion = spotbugsVersion
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
     omitVisitors = [
-        'LostLoggerDueToWeakReference',
         'FindReturnRef'
     ]
     if (it.name.endsWith('Test')) {
