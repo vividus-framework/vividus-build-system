@@ -53,7 +53,6 @@
     </rule>
 
     <rule ref="category/java/errorprone.xml">
-        <exclude name="NonSerializableClass"/>
         <exclude name="TestClassWithoutTestCases"/>
         <exclude name="UseLocaleWithCaseConversions"/>
     </rule>
