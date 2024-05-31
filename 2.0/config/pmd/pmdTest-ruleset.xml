@@ -6,7 +6,6 @@
     <description>Custom ruleset checks for unit tests from Vividus</description>
 
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="AccessorMethodGeneration"/>
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/>
