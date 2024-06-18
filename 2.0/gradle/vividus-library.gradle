@@ -250,7 +250,7 @@ buildscript {
 }
 apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
 ext {
-    spotbugsVersion = '4.8.5'
+    spotbugsVersion = '4.8.6'
 }
 spotbugs.toolVersion = spotbugsVersion
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
