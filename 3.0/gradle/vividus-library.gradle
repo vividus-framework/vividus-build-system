@@ -1,0 +1,307 @@
+/*
+ * Copyright 2019-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ext.buildSystemConfigDir = new File(rootScriptDir, 'config')
+
+group 'org.vividus'
+
+repositories {
+    mavenLocal()
+    mavenCentral() {
+        content {
+            excludeGroup 'org.vividus'
+        }
+    }
+    maven {
+        url 'https://maven.pkg.github.com/vividus-framework/vividus'
+        credentials {
+            username 'token'
+            password '\u0067' + '\u0068' + '\u0070' + '\u005f' + '\u004c' + '\u006b' + '\u0061' + '\u006f' + '\u0075' + '\u0065' + '\u0033' + '\u0037' + '\u0076' + '\u0054' + '\u0064' + '\u0058' + '\u004b' + '\u0072' + '\u006e' + '\u0058' + '\u0068' + '\u004a' + '\u006d' + '\u006e' + '\u0041' + '\u007a' + '\u0045' + '\u0046' + '\u006c' + '\u004c' + '\u0058' + '\u0047' + '\u0063' + '\u0069' + '\u0031' + '\u0078' + '\u0065' + '\u0048' + '\u0034' + '\u0053'
+        }
+        content {
+            includeGroup 'org.vividus'
+        }
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+def baselineJavaVersion = JavaVersion.VERSION_17
+def toolchainPropertyName = 'javaToolchainEnabled'
+
+def useToolchain = project.hasProperty(toolchainPropertyName) ? project.getProperty(toolchainPropertyName).toBoolean() : false
+
+ext.defaultJvmArgs = ['--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED', '--add-opens=java.base/java.nio=ALL-UNNAMED']
+
+if (useToolchain) {
+    def baselineLanguageVersion = JavaLanguageVersion.of(baselineJavaVersion.toString())
+    java {
+        toolchain {
+            languageVersion = baselineLanguageVersion
+        }
+    }
+
+    tasks.withType(JavaExec).configureEach {
+        javaLauncher = javaToolchains.launcherFor {
+            languageVersion = baselineLanguageVersion
+        }
+    }
+}
+else {
+    java {
+        sourceCompatibility = baselineJavaVersion
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    configure(options) {
+        compilerArgs += ['-Xlint', '-parameters']
+        encoding = 'UTF-8'
+    }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    def testExceptionFormatKey = 'test.testLogging.exceptionFormat'
+    if (project.hasProperty(testExceptionFormatKey)) {
+        test.testLogging {
+            exceptionFormat project.property(testExceptionFormatKey)
+        }
+    }
+    jvmArgs += ['-Duser.language=en', '-Duser.country=US'] + defaultJvmArgs
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+        )
+    }
+    into 'META-INF', {
+        from("$rootDir/LICENSE")
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+            'Automatic-Module-Name': "${project.group}.${project.name.replaceAll('-', '_')}"
+        )
+    }
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+
+    // See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363) for information about the -Werror option.
+    options.addBooleanOption('Werror', true)
+}
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            pom {
+                inceptionYear = '2019'
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+eclipse.classpath.file.whenMerged {
+    entries.removeAll {
+        (it in org.gradle.plugins.ide.eclipse.model.AbstractClasspathEntry && it.entryAttributes['gradle_used_by_scope'] == ''
+            && !it.path.contains('spotbugs-annotations')) //Gradle doesn't handle 'compileOnly' scope properly
+    }
+}
+
+
+
+apply from: "${gradleScriptDir}/jacoco.gradle"
+
+tasks.withType(Test) { testTask ->
+    def testTaskName = testTask.name
+    if ('test' != testTaskName) {
+        tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport) {
+            executionData testTask
+            sourceSets sourceSets.main
+        }
+        tasks.register("jacoco${testTaskName.capitalize()}CoverageVerification", JacocoCoverageVerification) {
+            executionData testTask
+            sourceSets sourceSets.main
+        }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'INSTRUCTION'
+                minimum = 0.93
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.87
+            }
+        }
+    }
+}
+
+check.dependsOn tasks.withType(JacocoReport)
+check.dependsOn tasks.withType(JacocoCoverageVerification)
+
+//Additional SourceSets can be added to the jacocoOfflineSourceSets as needed by
+project.ext.jacocoOfflineSourceSets = [ 'main' ]
+tasks.register('doJacocoOfflineInstrumentation') {
+    dependsOn = [classes, project.configurations.jacocoAnt]
+    inputs.files classes.outputs.files
+    File outputDir = layout.buildDirectory.dir('instrumentedClasses').get().asFile
+    outputs.dir outputDir
+    doFirst {
+        project.delete(outputDir)
+        ant.taskdef(
+            resource: 'org/jacoco/ant/antlib.xml',
+            classpath: project.configurations.jacocoAnt.asPath,
+            uri: 'jacoco'
+        )
+        jacocoOfflineSourceSets.each { sourceSetName ->
+            def instrumentedClassedDir = "${outputDir}/${sourceSetName}"
+            files(sourceSets[sourceSetName].output.classesDirs).each { classesDir ->
+                if (classesDir.exists()) {
+                    ant.'jacoco:instrument'(destdir: instrumentedClassedDir) {
+                        fileset(dir: classesDir, includes: '**/*.class')
+                    }
+                    //Replace the classes dir in the test classpath with the instrumented one
+                    sourceSets.test.runtimeClasspath -= files(classesDir)
+                    sourceSets.test.runtimeClasspath = files(instrumentedClassedDir) + sourceSets.test.runtimeClasspath
+                }
+            }
+        }
+    }
+}
+test.dependsOn doJacocoOfflineInstrumentation
+
+
+
+apply plugin: 'checkstyle'
+checkstyle {
+    configDirectory = file("${buildSystemConfigDir}/checkstyle")
+    dependencies {
+        checkstyle(group: 'com.puppycrawl.tools', name: 'checkstyle', version: '10.17.0')
+        checkstyle(group: 'com.github.sevntu-checkstyle', name: 'sevntu-checks', version: '1.44.1')
+    }
+}
+
+apply plugin: 'pmd'
+pmd {
+    consoleOutput = true
+    toolVersion = '7.3.0'
+    maxFailures = 18
+    ruleSets = []
+}
+pmdMain {
+    ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdMain-ruleset.xml")
+}
+tasks.withType(Pmd).configureEach {
+    if (it.name.endsWith('Test')) {
+        it.ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdTest-ruleset.xml")
+    }
+}
+
+buildscript {
+    dependencies {
+        classpath(group: 'com.github.spotbugs.snom', name: 'spotbugs-gradle-plugin', version: '6.0.18')
+    }
+}
+apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
+ext {
+    spotbugsVersion = '4.8.6'
+}
+spotbugs.toolVersion = spotbugsVersion
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    omitVisitors = [
+        'FindReturnRef'
+    ]
+    if (it.name.endsWith('Test')) {
+        omitVisitors.add('MethodReturnCheck')
+    }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+spotless {
+    java {
+        def origin = 'origin/master'
+        if (new File(gitRepo, 'refs/remotes/' + origin).exists()) {
+            ratchetFrom origin
+        }
+        importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
+        formatAnnotations().removeTypeAnnotation('NotNull')
+        removeUnusedImports()
+    }
+    format 'VividusPlugins', {
+        target '**/*.steps'
+        targetExclude gitignorePatterns
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+
+
+buildscript {
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '5.2.2')
+    }
+}
+apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
+artifactory {
+    publish {
+        defaults {
+            publications('maven')
+        }
+        repository {
+            repoKey = System.getProperty(project.version.endsWith('SNAPSHOT') ? 'artifactory.publish.snapshotRepoKey' : 'artifactory.publish.releaseRepoKey') ?: System.getProperty('artifactory.publish.repoKey')
+        }
+        contextUrl = System.getProperty('artifactory.publish.contextUrl')
+    }
+}

@@ -1,0 +1,316 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply from: "${gradleScriptDir}/vividus-library.gradle"
+
+configurations.configureEach {
+    resolutionStrategy.cacheChangingModulesFor 1, 'days'
+}
+
+
+
+spotless {
+    format 'Vividus', {
+        target '**/*.story', '**/*.steps', '**/*.table'
+        targetExclude gitignorePatterns
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+
+
+apply plugin: 'java-library-distribution'
+
+distributions {
+    main {
+        contents {
+            from(rootScriptDir) {
+                include 'scripts/*'
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            afterEvaluate {
+                if (distZip.enabled) {
+                    artifact distZip
+                }
+                if (distTar.enabled) {
+                    artifact distTar
+                }
+                if (distSourcesZip.enabled) {
+                    artifact distSourcesZip
+                }
+                if (storiesJar.enabled) {
+                    artifact storiesJar
+                }
+            }
+            pom {
+                // Reset POM attributes for test projects
+                inceptionYear = null
+                licenses.clear()
+            }
+        }
+    }
+}
+
+tasks.register('storiesJar', Jar) {
+    archiveClassifier = 'stories'
+    from (sourceSets.main.resources) {
+        exclude 'properties/configuration.properties'
+    }
+}
+
+import org.apache.tools.ant.DirectoryScanner
+
+import java.nio.file.Paths
+
+tasks.register('distSourcesZip', Zip) {
+    archiveClassifier = 'sources'
+    //workaround for https://issues.gradle.org/browse/GRADLE-1883
+    doFirst {
+        DirectoryScanner.defaultExcludes.each { if(it.contains('.gitignore')){DirectoryScanner.removeDefaultExclude it }}
+    }
+    from (project.getProjectDir()) {
+        exclude '.gradle/**'
+        exclude '.settings/**'
+        exclude '.classpath'
+        exclude 'bin/**'
+        exclude 'output/**'
+    }
+}
+
+distSourcesZip.enabled = false
+distTar.enabled = true
+distZip.enabled = false
+storiesJar.enabled = false
+
+
+class VividusJavaExec extends JavaExec {
+    def collectVividusProperties() {
+        project.properties.findAll({k,v -> k.startsWith('vividus.')})
+    }
+}
+
+class VividusTask extends VividusJavaExec {
+    @Input
+    String[] arguments
+}
+
+class StoriesExec extends VividusJavaExec {
+    @Input
+    @Option(option = 'treat-known-issues-only-as-passed', description = 'Enables treating of known issues as positive result for stories execution')
+    boolean treatKnownIssuesOnlyAsPassed = false
+
+    @Input
+    boolean resolvePathAgainstProjectBuildDir
+
+    @Input
+    @Optional
+    String fileToSaveExitCode
+}
+
+tasks.withType(StoriesExec).configureEach {
+    mainClass = 'org.vividus.runner.StoriesRunner'
+    jvmArgs += defaultJvmArgs
+    doFirst {
+        environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
+        systemProperties(['vividus.output.directory': layout.buildDirectory.get().asFile.absolutePath] + collectVividusProperties())
+    }
+    ignoreExitValue true
+    doLast {
+        def pathToExitCodeFile = project.findProperty('fileToSaveExitCode') ?: fileToSaveExitCode
+        if (pathToExitCodeFile) {
+            def pathToFile = (project.findProperty('resolvePathAgainstProjectBuildDir') ?: resolvePathAgainstProjectBuildDir)
+                    ? layout.buildDirectory.file(pathToExitCodeFile).get().asFile
+                    : file(pathToExitCodeFile)
+            pathToFile.write("${executionResult.get().getExitValue()}")
+            logger.lifecycle("Exit code is saved to the file: ${pathToFile}")
+        }
+        if (gradle.taskGraph.hasTask(":${project.name}:validateRunStatistics")) {
+            logger.warn('\nExit value {} is ignored', executionResult.get().getExitValue())
+        }
+        else if (treatKnownIssuesOnlyAsPassed && executionResult.get().getExitValue() == 1) {
+            logger.warn('\nKNOWN ISSUES ONLY: All test failures are known issues')
+        } else {
+            executionResult.get().assertNormalExitValue()
+        }
+    }
+}
+
+ext.VIVIDUS_TASK_GROUP = 'VIVIDUS'
+
+tasks.register('checkDependenciesConsistency') {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Ensures consistency of VIVIDUS dependencies in the project.'
+
+    doFirst {
+        def dependencies = project.configurations.implementation.allDependencies;
+        def groupMatcher = { it.group.equals('org.vividus') }
+        def nameMatcher = { dependency, targetName ->
+            groupMatcher.call(dependency) && dependency.name.equals(targetName)
+        }
+
+        def vividusLib = dependencies.find { nameMatcher.call(it, 'vividus') }
+        if (vividusLib == null) {
+            throw new GradleException('The mandatory \'vividus\' dependency is missing in project dependencies'
+                + ' configuration.')
+        }
+
+        def vividusBomLib = dependencies.find { nameMatcher.call(it, 'vividus-bom') }
+        if (vividusBomLib != null) {
+            def vividusBomVersion = vividusBomLib.version
+            if (vividusBomVersion == null) {
+                throw new GradleException('Please specify version for \'vividus-bom\' dependency in project'
+                    + ' dependencies configuration.')
+            }
+
+            def dependenciesWithVersions = dependencies.findAll {
+                groupMatcher.call(it) && it.version != null && !it.name.equals('vividus-bom')
+            }.collect { it.name }
+
+            if (!dependenciesWithVersions.isEmpty()) {
+                throw new GradleException('Versions for the following dependencies should be removed as you use '
+                    + '\'vividus-bom\' dependency in project dependencies configuration: ' + dependenciesWithVersions.join(', '))
+            }
+
+            project.ext.vividusVersion = vividusBomVersion
+            return
+        }
+
+        project.ext.vividusVersion = vividusLib.version
+
+        def dependenciesWithInvalidVersions = dependencies.findAll {
+            groupMatcher.call(it) && !vividusVersion.equals(it.version)
+        }.collect { it.name }
+
+        if (!dependenciesWithInvalidVersions.isEmpty()) {
+            throw new GradleException("The following dependencies must be of ${vividusVersion} version: "
+                + dependenciesWithInvalidVersions.join(', '))
+        }
+    }
+}
+
+tasks.register('runStories', StoriesExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Runs stories.'
+}
+
+tasks.register('debugStories', StoriesExec) {
+    dependsOn = [assemble]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Debug stories (all build checks are ignored).'
+}
+
+tasks.register('validateRunStatistics') {
+    dependsOn 'runStories'
+    def property = 'expectedRunStatistics'
+    def expectedResult = project.findProperty(property)
+    gradle.taskGraph.whenReady {
+        if (!expectedResult) {
+            throw new StopExecutionException("project property \"$property\" should be set")
+        }
+    }
+    doLast {
+        def slurper = new groovy.json.JsonSlurper()
+        File actualFile = layout.buildDirectory.file('statistics/statistics.json').get().asFile
+        File expectedFile = layout.buildDirectory.file(expectedResult).get().asFile
+        def actualMap = slurper.parseText(actualFile.text)
+        def expectedMap = slurper.parseText(expectedFile.text)
+        logger.warn("Expected execution statistics:\n {} actual ecxecution statistics :\n {}", expectedFile.text, actualFile.text)
+        assert expectedMap == actualMap
+    }
+}
+
+
+tasks.register('printSteps', VividusTask) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Prints available steps in alphabetical order.'
+    mainClass = 'org.vividus.runner.StepsPrinter'
+    arguments = ['file']
+}
+
+tasks.register('countScenarios', VividusJavaExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Counts scenarios in project.'
+    mainClass = 'org.vividus.runner.ScenariosCounter'
+}
+
+tasks.register('countSteps', VividusJavaExec) {
+    dependsOn = [build]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Counts steps in project.'
+    mainClass = 'org.vividus.runner.StepsCounter'
+}
+
+tasks.register('validateKnownIssues', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Validates configuration of known issues.'
+    mainClass = 'org.vividus.runner.KnownIssueValidator'
+}
+
+tasks.register('testVividusInitialization', VividusTask) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Tests VIVIDUS initialization.'
+    mainClass = 'org.vividus.runner.VividusInitializationChecker'
+    arguments = ['ignoreBeans']
+}
+
+tasks.register('replaceDeprecatedSteps', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Replace deprecated steps in stories and composite steps.'
+    mainClass = 'org.vividus.runner.DeprecatedStepsReplacer'
+    args = ['--resourceLocation', sourceSets.main.resources.srcDirs.first().absolutePath]
+}
+
+tasks.register('replaceDeprecatedProperties', VividusJavaExec) {
+    dependsOn = [test]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Replace deprecated properties.'
+    mainClass = 'org.vividus.runner.DeprecatedPropertiesReplacer'
+    args = ['--propertiesRootDirectory', sourceSets.main.resources.srcDirs.first().absolutePath + '/properties']
+}
+
+check.configure {
+    dependsOn = [checkDependenciesConsistency, validateKnownIssues, testVividusInitialization]
+}
+
+[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties].each { task ->
+    task.doFirst {
+        environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
+        systemProperties(collectVividusProperties())
+        if (task.hasProperty('arguments')) {
+            task.property('arguments').each { arg ->
+                if (project.hasProperty(arg)) {
+                    args('--' + arg, project.property(arg))
+                }
+            }
+        }
+    }
+}

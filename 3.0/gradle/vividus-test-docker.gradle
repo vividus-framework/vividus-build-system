@@ -1,0 +1,86 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath(group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '9.4.0')
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+tasks.register('copyProjectLibrary', Copy) {
+    dependsOn = [build, jar]
+    from layout.buildDirectory.dir('libs')
+    into layout.buildDirectory.dir('docker/libs')
+}
+
+tasks.register('createTestsDockerfile', com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+    dependsOn = [copyProjectLibrary]
+    doFirst {
+        from("vividus/vividus:${project.ext.vividusVersion}")
+        copyFile('libs', '/vividus/libs/')
+    }
+}
+
+tasks.register('buildTestsImage', com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    dependsOn = [createTestsDockerfile]
+
+    doFirst {
+        def repositoryPath = getProperty('DOCKER_REPOSITORY_PATH', 'docker.repository-path')
+        if (repositoryPath == null) {
+            throw new StopExecutionException('Please set repository path using \'docker.repository-path\' gradle property'
+                + ' or \'DOCKER_REPOSITORY_PATH\' environemnt variable')
+        }
+
+        images.add("${repositoryPath}/${project.name}:${project.version}")
+    }
+}
+
+tasks.register('pushTestsImage', com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
+    dependsOn = [buildTestsImage]
+    images = buildTestsImage.images
+
+    doFirst {
+        def usernameVarKey = 'DOCKER_REGISTRY_USERNAME'
+        def passwordVarKey = 'DOCKER_REGISTRY_PASSWORD'
+
+        def registryUsername = System.getenv(usernameVarKey)
+        def registryPassword = System.getenv(passwordVarKey)
+
+        if (registryUsername != null && registryPassword == null
+                || registryUsername == null && registryPassword != null) {
+            def args = registryUsername == null ? [passwordVarKey, usernameVarKey]
+                : [usernameVarKey, passwordVarKey]
+            throw new StopExecutionException("Environment variable ${args[0]} is set, but ${args[1]} is not.")
+        }
+
+        registryCredentials {
+            url = getProperty('DOCKER_REGISTRY_URL', 'docker.registry-url')
+            username = registryUsername
+            password = registryPassword
+        }
+    }
+}
+
+def getProperty(String envVarName, String propertyName) {
+    def value = System.getenv(envVarName)
+    return value != null ? value : project.findProperty(propertyName)
+}
