@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +26,14 @@ buildscript {
 }
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
 
-def customVersionPrefix = project.findProperty('versionPrefix') ?: ''
 scmVersion {
     repository {
         directory.set(project.rootProject.file(project.findProperty('gitRepository.rootDirectory') ?: './').absolutePath)
     }
     tag {
-        if (customVersionPrefix.length() > 0) {
-            prefix = 'releases/' + customVersionPrefix
-        } else {
-            prefix = 'release-'
-        }
+        prefix = 'release-'
     }
 }
-
-def customPrefixWithSeparator = customVersionPrefix.length() > 0 ? customVersionPrefix + '-' : ''
 
 // Added to exclude files mentioned in .gitignore
 //https://github.com/diffplug/spotless/issues/365
@@ -55,7 +48,7 @@ allprojects {
     buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
     ext.gitRepo = new File(scmVersion.repository.directory.get(), '.git')
     try {
-        project.version = customPrefixWithSeparator + scmVersion.version
+        project.version = scmVersion.version
     }
     catch (pl.allegro.tech.build.axion.release.domain.scm.ScmException e) {
         project.version = 'local-SNAPSHOT'
