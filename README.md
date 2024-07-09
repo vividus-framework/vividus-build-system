@@ -135,3 +135,5 @@ existing automated tests and infrastructre for them to use Build System 3.0.
 
 1. Java 21+ is required: make sure to update all environments (local, CI, etc.) where tests are developed and run to use
 [Java 21](https://adoptium.net/temurin/releases/?version=21) or higher.
+1. The ability to specify custom prefix for the version of the built artifact is removed. Previously it was possible to
+set custom prefix using project property `versionPrefix`, but this feature was not customizable and was not popular.
