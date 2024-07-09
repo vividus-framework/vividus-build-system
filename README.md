@@ -67,7 +67,7 @@ The build system can be cloned as a regular Git repository to any location. Afte
   <summary><h2>Migrating from <code>1.0</code> to <code>2.0</code></h2></summary>
 
   Build System 1.0 is not maintained anymore and is going to be retired. All users are recommended to migrate to Build System 2.0.
-  
+
   ### How to switch to Build System 2.0
   1. Sync Build System:
       - [Internal](#option-1-internal-recommened): follow the [guide above](#update-from-the-vividus-build-system-remote).
@@ -78,39 +78,39 @@ The build system can be cloned as a regular Git repository to any location. Afte
       buildSystemVersion=2.0
       ```
   1. Build the project.
-  
+
   ### List of breaking changes
   This is the list of breaking changes between major versions `1.0` and `2.0`. It should help to successfully migrate
   existing automated tests and infrastructre for them to use Build System 2.0.
-  
+
   1. Java 17+ is required: make sure to update all environments (local, CI, etc.) where tests are developed and run to use
   [Java 17](https://adoptium.net/temurin/releases/?version=17) or higher.<br/>Also it's needed to check the IDE used to develop tests supports Java 17 or higher.
   1. [VIVIDUS Artifactory](https://vividuscentral.jfrog.io/artifactory/releases) is removed from the list of repositories
   where dependencies are downloaded from.
-  
+
       Most likely this change won't affect any users, because VIVIDUS Artifactory was used as a backup storage of VIVIDUS
       releases up to `0.4.5` version. The primary storage is GitHub Packages.
-  
+
   1. Correcness of the file with known issues configuration (`known-issues.json`) is checked at test project build phase.
   1. There is no longer a requirement to define the extra property `ext.buildSystemDir`. The mentioned property can be
   safely removed from the `build.gradle` file located in the test project root directory.
-  
+
   <details>
     <summary>The following list conatins breaking changes that may affect people who develop own VIVIDUS plugins and modules.</summary>
-  
+
     1. [SonarQube Gradle plugin](https://plugins.gradle.org/plugin/org.sonarqube) is not added by default anymore.
-  
+
         SonarQube is a tool which is used to track code quality, it doesn't have VIVIDUS support (yet :)), so there is no
         reason to apply it to all projects. If you use SonarQube for your modules, you should manage such integrations on
         your side. You can find example of simple migration [here](https://github.com/vividus-framework/vividus/commit/b216a5801ac181bfa59794e87ebfa909fe191da3).
     1. [VIVIDUS Artifactory](https://vividuscentral.jfrog.io/artifactory/releases) is removed from the list of repositories
     where dependencies are downloaded from.
-  
+
         If you use VIVIDUS Artifactory as a caching proxy to download dependencies, then you should configure repositories
         storing the required dependencies on your side.
-  
+
     1. `**/*.min.js` files are removed from exclusions of static code check ensuring that `https://` is used for everything.
-  
+
         Fine-tuned exclusions for custom files should be done at the project level.
   </details>
 </details>
