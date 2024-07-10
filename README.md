@@ -137,3 +137,5 @@ existing automated tests and infrastructre for them to use Build System 3.0.
 [Java 21](https://adoptium.net/temurin/releases/?version=21) or higher.
 1. The ability to specify custom prefix for the version of the built artifact is removed. Previously it was possible to
 set custom prefix using project property `versionPrefix`, but this feature was not customizable and was not popular.
+1. The task `validateKnownIssues` is not included in the project build phase anymore. The correcness of the file with
+known issues configuration (`known-issues.json`) is checked in scope of the task `testVividusInitialization`.
