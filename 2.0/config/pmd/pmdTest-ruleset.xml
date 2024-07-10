@@ -70,6 +70,12 @@
             <property name="testClassPattern" value="^.*Tests$"/>
         </properties>
     </rule>
+    <rule ref="category/java/errorprone.xml/CloseResource">
+        <properties>
+            <property name="allowedResourceTypes"
+                      value="com.microsoft.playwright.Page,com.microsoft.playwright.BrowserContext"/>
+        </properties>
+    </rule>
 
     <rule ref="category/java/multithreading.xml">
         <exclude name="DoNotUseThreads"/>
