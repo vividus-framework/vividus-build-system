@@ -27,6 +27,7 @@ buildscript {
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
 
 scmVersion {
+    versionCreator('simple')
     repository {
         directory.set(project.rootProject.file(project.findProperty('gitRepository.rootDirectory') ?: './').absolutePath)
     }
