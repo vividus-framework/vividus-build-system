@@ -231,7 +231,7 @@ apply plugin: 'pmd'
 pmd {
     consoleOutput = true
     toolVersion = '7.5.0'
-    maxFailures = 18
+    maxFailures = 17
     ruleSets = []
 }
 pmdMain {
