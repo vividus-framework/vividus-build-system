@@ -55,6 +55,7 @@
     <rule ref="category/java/errorprone.xml">
         <exclude name="TestClassWithoutTestCases"/>
         <exclude name="UseLocaleWithCaseConversions"/>
+        <exclude name="UseProperClassLoader"/> <!-- https://stackoverflow.com/questions/1771679/difference-between-threads-context-class-loader-and-normal-classloader -->
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
       <properties>
