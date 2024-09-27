@@ -231,15 +231,16 @@ apply plugin: 'pmd'
 pmd {
     consoleOutput = true
     toolVersion = '7.6.0'
-    maxFailures = 17
     ruleSets = []
 }
 pmdMain {
     ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdMain-ruleset.xml")
+    maxFailures = 17
 }
 tasks.withType(Pmd).configureEach {
     if (it.name.endsWith('Test')) {
         it.ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdTest-ruleset.xml")
+        maxFailures = 16
     }
 }
 
