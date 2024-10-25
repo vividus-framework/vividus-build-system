@@ -6,8 +6,6 @@
     <description>Custom ruleset checks for Vividus</description>
 
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-
         <!-- Starting from PMD 7.0.0 the rule generates too many false-ppsitives -->
         <exclude name="LooseCoupling"/>
     </rule>
