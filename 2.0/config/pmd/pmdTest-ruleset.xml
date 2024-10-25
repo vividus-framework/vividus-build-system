@@ -8,7 +8,7 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <exclude name="UnitTestShouldIncludeAssert"/>
 
         <!-- Starting from PMD 7.0.0 the rule generates too many false-ppsitives -->
         <exclude name="LooseCoupling"/>
