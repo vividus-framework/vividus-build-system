@@ -6,8 +6,8 @@
     <description>Custom ruleset checks for unit tests from Vividus</description>
 
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
         <exclude name="UnitTestShouldIncludeAssert"/>
 
         <!-- Starting from PMD 7.0.0 the rule generates too many false-ppsitives -->
