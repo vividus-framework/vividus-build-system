@@ -16,7 +16,7 @@
 
 ext.buildSystemConfigDir = new File(rootScriptDir, 'config')
 
-group 'org.vividus'
+group = 'org.vividus'
 
 repositories {
     mavenLocal()
@@ -26,17 +26,17 @@ repositories {
         }
     }
     maven {
-        url 'https://maven.pkg.github.com/vividus-framework/vividus'
+        url = 'https://maven.pkg.github.com/vividus-framework/vividus'
         credentials {
-            username 'token'
-            password '\u0067' + '\u0068' + '\u0070' + '\u005f' + '\u004c' + '\u006b' + '\u0061' + '\u006f' + '\u0075' + '\u0065' + '\u0033' + '\u0037' + '\u0076' + '\u0054' + '\u0064' + '\u0058' + '\u004b' + '\u0072' + '\u006e' + '\u0058' + '\u0068' + '\u004a' + '\u006d' + '\u006e' + '\u0041' + '\u007a' + '\u0045' + '\u0046' + '\u006c' + '\u004c' + '\u0058' + '\u0047' + '\u0063' + '\u0069' + '\u0031' + '\u0078' + '\u0065' + '\u0048' + '\u0034' + '\u0053'
+            username = 'token'
+            password = '\u0067' + '\u0068' + '\u0070' + '\u005f' + '\u004c' + '\u006b' + '\u0061' + '\u006f' + '\u0075' + '\u0065' + '\u0033' + '\u0037' + '\u0076' + '\u0054' + '\u0064' + '\u0058' + '\u004b' + '\u0072' + '\u006e' + '\u0058' + '\u0068' + '\u004a' + '\u006d' + '\u006e' + '\u0041' + '\u007a' + '\u0045' + '\u0046' + '\u006c' + '\u004c' + '\u0058' + '\u0047' + '\u0063' + '\u0069' + '\u0031' + '\u0078' + '\u0065' + '\u0048' + '\u0034' + '\u0053'
         }
         content {
             includeGroup 'org.vividus'
         }
     }
     maven {
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
     }
 }
 
