@@ -62,7 +62,7 @@ allprojects {
             targetExclude gitignorePatterns
 
             trimTrailingWhitespace()
-            indentWithSpaces()
+            leadingTabsToSpaces()
             endWithNewline()
         }
         format 'misc', {
@@ -70,7 +70,7 @@ allprojects {
             targetExclude gitignorePatterns
 
             trimTrailingWhitespace()
-            indentWithSpaces()
+            leadingTabsToSpaces()
             endWithNewline()
         }
     }

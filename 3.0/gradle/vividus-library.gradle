@@ -255,7 +255,7 @@ spotless {
         targetExclude gitignorePatterns
 
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
 }
