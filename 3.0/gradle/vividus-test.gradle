@@ -165,7 +165,7 @@ tasks.register('checkDependenciesConsistency') {
     description = 'Ensures consistency of VIVIDUS dependencies in the project.'
 
     doFirst {
-        def dependencies = project.configurations.implementation.allDependencies;
+        def dependencies = configurations.implementation.allDependencies;
         def groupMatcher = { it.group.equals('org.vividus') }
         def nameMatcher = { dependency, targetName ->
             groupMatcher.call(dependency) && dependency.name.equals(targetName)
@@ -194,11 +194,11 @@ tasks.register('checkDependenciesConsistency') {
                     + '\'vividus-bom\' dependency in project dependencies configuration: ' + dependenciesWithVersions.join(', '))
             }
 
-            project.ext.vividusVersion = vividusBomVersion
+            ext.vividusVersion = vividusBomVersion
             return
         }
 
-        project.ext.vividusVersion = vividusLib.version
+        ext.vividusVersion = vividusLib.version
 
         def dependenciesWithInvalidVersions = dependencies.findAll {
             groupMatcher.call(it) && !vividusVersion.equals(it.version)
