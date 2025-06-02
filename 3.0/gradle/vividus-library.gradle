@@ -203,7 +203,7 @@ checkstyle {
 apply plugin: 'pmd'
 pmd {
     consoleOutput = true
-    toolVersion = '7.13.0'
+    toolVersion = '7.14.0'
     ruleSets = []
 }
 pmdMain {
