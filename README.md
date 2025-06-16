@@ -139,3 +139,5 @@ existing automated tests and infrastructre for them to use Build System 3.0.
 set custom prefix using project property `versionPrefix`, but this feature was not customizable and was not popular.
 1. The task `validateKnownIssues` is not included in the project build phase anymore. The correcness of the file with
 known issues configuration (`known-issues.json`) is checked in scope of the task `testVividusInitialization`.
+1. The support of Artifactory is dropped (`artifactoryPublish` task is not available out of the box anymore). Now the projects
+using Artifactory should apply the corresponding plugin and prepare publishing scripts on their own.
