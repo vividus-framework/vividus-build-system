@@ -297,11 +297,21 @@ tasks.register('replaceDeprecatedProperties', VividusJavaExec) {
     args = ['--propertiesRootDirectory', sourceSets.main.resources.srcDirs.first().absolutePath + '/properties']
 }
 
+tasks.register('startMcpServer', VividusJavaExec) {
+    dependsOn = [assemble]
+    group = VIVIDUS_TASK_GROUP
+    description = 'Start VIVIDUS MCP server'
+    mainClass = 'org.vividus.mcp.McpServer'
+    standardInput = System.in
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
 check.configure {
     dependsOn = [checkDependenciesConsistency, testVividusInitialization]
 }
 
-[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties].each { task ->
+[testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties, startMcpServer].each { task ->
     task.doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
         systemProperties(collectVividusProperties())
