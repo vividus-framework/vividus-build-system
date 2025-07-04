@@ -24,6 +24,20 @@ buildscript {
         classpath(group: 'com.diffplug.spotless', name: 'spotless-plugin-gradle', version: '7.0.4')
     }
 }
+
+services.get(org.gradle.internal.logging.text.StyledTextOutputFactory)
+    .create("error-output")
+    .style(org.gradle.internal.logging.text.StyledTextOutput.Style.Failure)
+    .println('')
+    .println('=============================================================================================================================')
+    .println('')
+    .println('      VIVIDUS Build System 2.0 is not maintained anymore.')
+    .println('      Please, upgrade to VIVIDUS Build System 3.0 at the earliest convenient time.')
+    .println('      Migration guide is available at https://github.com/vividus-framework/vividus-build-system#migrating-from-20-to-30')
+    .println('')
+    .println('=============================================================================================================================')
+    .println('')
+
 apply plugin: pl.allegro.tech.build.axion.release.ReleasePlugin
 
 def customVersionPrefix = project.findProperty('versionPrefix') ?: ''
