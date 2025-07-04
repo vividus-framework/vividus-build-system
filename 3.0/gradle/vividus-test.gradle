@@ -106,8 +106,8 @@ storiesJar.enabled = false
 
 
 class VividusJavaExec extends JavaExec {
-    def collectVividusProperties() {
-        project.properties.findAll({k,v -> k.startsWith('vividus.')})
+    def collectVividusProperties(ProviderFactory providers) {
+        providers.gradlePropertiesPrefixedBy('vividus.').get()
     }
 }
 
@@ -134,7 +134,7 @@ tasks.withType(StoriesExec).configureEach {
     jvmArgs += defaultJvmArgs
     doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
-        systemProperties(['vividus.output.directory': layout.buildDirectory.get().asFile.absolutePath] + collectVividusProperties())
+        systemProperties(['vividus.output.directory': layout.buildDirectory.get().asFile.absolutePath] + collectVividusProperties(providers))
     }
     ignoreExitValue = true
     doLast {
@@ -314,11 +314,12 @@ check.configure {
 [testVividusInitialization, printSteps, validateKnownIssues, countScenarios, countSteps, replaceDeprecatedSteps, replaceDeprecatedProperties, startMcpServer].each { task ->
     task.doFirst {
         environment 'CLASSPATH', sourceSets.main.runtimeClasspath.asPath // Workaround for Windows-specific issue: classpath is too long
-        systemProperties(collectVividusProperties())
+        systemProperties(collectVividusProperties(providers))
         if (task.hasProperty('arguments')) {
             task.property('arguments').each { arg ->
-                if (project.hasProperty(arg)) {
-                    args('--' + arg, project.property(arg))
+                def gradlePropertyProvider = providers.gradleProperty(arg)
+                if (gradlePropertyProvider.isPresent()) {
+                    args('--' + arg, gradlePropertyProvider.get())
                 }
             }
         }
