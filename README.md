@@ -141,3 +141,4 @@ set custom prefix using project property `versionPrefix`, but this feature was n
 known issues configuration (`known-issues.json`) is checked in scope of the task `testVividusInitialization`.
 1. The support of Artifactory is dropped (`artifactoryPublish` task is not available out of the box anymore). Now the projects
 using Artifactory should apply the corresponding plugin and prepare publishing scripts on their own.
+1. Workaround for Kafka client is removed: it is strongly recommended to upgrada to VIVIDUS `0.6.15` or higher before migration.
