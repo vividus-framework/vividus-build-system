@@ -248,6 +248,7 @@ spotless {
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
         formatAnnotations().removeTypeAnnotation('NotNull')
         removeUnusedImports()
+        removeWildcardImports()
     }
     format 'VividusPlugins', {
         target '**/*.steps'
