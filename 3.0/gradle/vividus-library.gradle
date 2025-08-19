@@ -246,7 +246,7 @@ spotless {
             ratchetFrom origin
         }
         importOrderFile "${buildSystemConfigDir}/eclipse/eclipse.importorder"
-        formatAnnotations().removeTypeAnnotation('NotNull')
+        formatAnnotations().removeTypeAnnotation('NotNull').removeTypeAnnotation('NotBlank')
         removeUnusedImports()
         removeWildcardImports()
     }
