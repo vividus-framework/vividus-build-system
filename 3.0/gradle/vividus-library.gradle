@@ -212,7 +212,7 @@ pmdMain {
 tasks.withType(Pmd).configureEach {
     if (it.name.endsWith('Test')) {
         it.ruleSetFiles = files("${buildSystemConfigDir}/pmd/pmdTest-ruleset.xml")
-        maxFailures = 16
+        maxFailures = 15
     }
 }
 
