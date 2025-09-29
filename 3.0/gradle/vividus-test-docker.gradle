@@ -20,7 +20,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath(group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '9.4.0')
+        classpath('com.bmuschko:gradle-docker-plugin:9.4.0')
     }
 }
 
