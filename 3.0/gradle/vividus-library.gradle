@@ -194,7 +194,7 @@ apply plugin: 'checkstyle'
 checkstyle {
     configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
-        checkstyle('com.puppycrawl.tools:checkstyle:11.1.0')
+        checkstyle('com.puppycrawl.tools:checkstyle:12.0.0')
         checkstyle('com.github.sevntu-checkstyle:sevntu-checks:1.44.1')
     }
 }
