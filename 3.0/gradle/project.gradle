@@ -20,7 +20,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath('pl.allegro.tech.build:axion-release-plugin:1.20.1')
+        classpath('pl.allegro.tech.build:axion-release-plugin:1.21.0')
         classpath('com.diffplug.spotless:spotless-plugin-gradle:8.0.0')
     }
 }
