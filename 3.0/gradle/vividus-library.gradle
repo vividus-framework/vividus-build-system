@@ -218,7 +218,7 @@ tasks.withType(Pmd).configureEach {
 
 buildscript {
     dependencies {
-        classpath('com.github.spotbugs.snom:spotbugs-gradle-plugin:6.4.4')
+        classpath('com.github.spotbugs.snom:spotbugs-gradle-plugin:6.4.7')
     }
 }
 apply plugin: com.github.spotbugs.snom.SpotBugsPlugin
