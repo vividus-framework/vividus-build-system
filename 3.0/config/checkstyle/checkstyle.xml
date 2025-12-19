@@ -29,6 +29,11 @@
       <property name="illegalClasses" value="^.+(?&lt;!org\.apache\.commons\.lang3\.)StringUtils.*" />
     </module>
     <module name="IllegalImport">
+      <property name="id" value="bannedFileUtilsOtherThanApacheCommonsLang3" />
+      <property name="regexp" value="true" />
+      <property name="illegalClasses" value="^.+(?&lt;!org\.apache\.commons\.lang3\.)FileUtils.*" />
+    </module>
+    <module name="IllegalImport">
       <property name="id" value="bannedJavaEmptyCollections" />
       <property name="regexp" value="true" />
       <property name="illegalClasses" value="^java\.util\.Collections\.empty(List|Map|Set)$" />
