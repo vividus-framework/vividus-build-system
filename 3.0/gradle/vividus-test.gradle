@@ -317,9 +317,13 @@ check.configure {
         systemProperties(collectVividusProperties(providers))
         if (task.hasProperty('arguments')) {
             task.property('arguments').each { arg ->
-                def gradlePropertyProvider = providers.gradleProperty(arg)
-                if (gradlePropertyProvider.isPresent()) {
-                    args('--' + arg, gradlePropertyProvider.get())
+                if (project.ext.has(arg)) {
+                    args('--' + arg, project.ext.get(arg))
+                } else {
+                    def gradlePropertyProvider = providers.gradleProperty(arg)
+                    if (gradlePropertyProvider.isPresent()) {
+                        args('--' + arg, gradlePropertyProvider.get())
+                    }
                 }
             }
         }
