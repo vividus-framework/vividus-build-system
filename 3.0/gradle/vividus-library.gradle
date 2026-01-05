@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2024 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,7 +194,7 @@ apply plugin: 'checkstyle'
 checkstyle {
     configDirectory = file("${buildSystemConfigDir}/checkstyle")
     dependencies {
-        checkstyle('com.puppycrawl.tools:checkstyle:12.3.0')
+        checkstyle('com.puppycrawl.tools:checkstyle:13.0.0')
         checkstyle('com.github.sevntu-checkstyle:sevntu-checks:1.44.1')
     }
 }
