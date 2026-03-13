@@ -57,6 +57,7 @@
     <module name="NeedBraces"/>
     <module name="NoWhitespaceBefore"/>
     <module name="NoWhitespaceBeforeCaseDefaultColon"/>
+    <module name="NumericalPrefixesInfixesSuffixesCharacterCase"/>
     <module name="OperatorWrap"/>
     <module name="PackageName"/>
     <module name="ParameterName"/>
