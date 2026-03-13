@@ -225,6 +225,7 @@
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)"/>
     </module>
+    <module name="UseEnhancedSwitch"/>
     <module name="RegexpSinglelineJava">
       <property name="id" value="streamOf"/>
       <property name="maximum" value="0"/>
