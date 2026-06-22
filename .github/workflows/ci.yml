@@ -10,7 +10,7 @@ jobs:
     name: Spotless checks
     runs-on: ubuntu-latest
     env:
-      BUILD_SYSTEM_VERSION: '2.0'
+      BUILD_SYSTEM_VERSION: '3.0'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/cache@v5
