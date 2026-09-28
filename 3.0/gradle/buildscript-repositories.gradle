@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-ext.rootScriptDir =  buildscript.sourceFile.parentFile
-ext.gradleScriptDir = new File(rootScriptDir, 'gradle')
-
-apply from: "${gradleScriptDir}/buildscript-repositories.gradle"
-apply from: "${gradleScriptDir}/project.gradle"
-apply from: "${rootScriptDir}/vividus-test-subproject.gradle"
+// Must be applied before any script containing a buildscript block that uses this closure
+ext.configureBuildscriptRepositories = { RepositoryHandler repositories ->
+    def customRepositories = findProperty('vividusBuildscriptRepositories')
+    if (customRepositories) {
+        repositories.with(customRepositories)
+    } else {
+        repositories.mavenCentral()
+        repositories.gradlePluginPortal()
+    }
+}

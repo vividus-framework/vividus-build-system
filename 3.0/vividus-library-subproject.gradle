@@ -32,8 +32,7 @@ spotless {
 
 buildscript {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
+        configureBuildscriptRepositories(delegate)
     }
     dependencies {
         classpath('io.spring.nohttp:nohttp-gradle:0.0.11') {

@@ -42,8 +42,7 @@ repositories {
 
 buildscript {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
+        configureBuildscriptRepositories(delegate)
     }
 }
 
