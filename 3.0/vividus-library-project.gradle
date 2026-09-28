@@ -17,5 +17,6 @@
 ext.rootScriptDir =  buildscript.sourceFile.parentFile
 ext.gradleScriptDir = new File(rootScriptDir, 'gradle')
 
+apply from: "${gradleScriptDir}/buildscript-repositories.gradle"
 apply from: "${gradleScriptDir}/project.gradle"
 apply from: "${rootScriptDir}/vividus-library-subproject.gradle"

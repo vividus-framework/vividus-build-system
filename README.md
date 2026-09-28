@@ -144,3 +144,34 @@ known issues configuration (`known-issues.json`) is checked in scope of the task
 1. The support of Artifactory is dropped (`artifactoryPublish` task is not available out of the box anymore). Now the projects
 using Artifactory should apply the corresponding plugin and prepare publishing scripts on their own.
 1. Workaround for Kafka client is removed: it is strongly recommended to upgrada to VIVIDUS `0.6.15` or higher before migration.
+
+## Custom repositories for Gradle plugins
+
+By default, Gradle plugins used by the build system are downloaded from [Maven Central](https://central.sonatype.com/)
+and [Gradle Plugin Portal](https://plugins.gradle.org/). If these repositories are not accessible (e.g. corporate
+network allows only internal Artifactory/Nexus), the repositories can be overridden by defining the extra property
+`vividusBuildscriptRepositories` in the `build.gradle` file located in the test project root directory.
+
+:warning: The property must be defined **before** the build system scripts are applied.
+
+:information_source: The custom repositories replace the default ones completely, so all required repositories must be
+listed in the closure.
+
+:information_source: This feature is available starting from Build System `3.0`.
+
+```gradle
+ext.vividusBuildscriptRepositories = {
+    maven {
+        url = 'https://artifactory.mycompany.com/artifactory/maven-remote'
+        credentials {
+            username = findProperty('artifactoryUser')
+            password = findProperty('artifactoryPassword')
+        }
+    }
+    maven {
+        url = 'https://artifactory.mycompany.com/artifactory/gradle-plugins-remote'
+    }
+}
+
+apply from: "${buildSystemPath}/${buildSystemVersion}/vividus-test-project.gradle"
+```

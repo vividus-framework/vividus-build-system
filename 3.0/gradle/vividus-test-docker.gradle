@@ -16,8 +16,7 @@
 
 buildscript {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
+        configureBuildscriptRepositories(delegate)
     }
     dependencies {
         classpath('com.bmuschko:gradle-docker-plugin:10.0.0')

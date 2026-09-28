@@ -16,8 +16,7 @@
 
 buildscript {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
+        configureBuildscriptRepositories(delegate)
     }
     dependencies {
         classpath('pl.allegro.tech.build:axion-release-plugin:1.21.4')
