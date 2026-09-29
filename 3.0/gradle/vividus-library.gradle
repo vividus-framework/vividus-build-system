@@ -233,8 +233,8 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
         omitVisitors.add('MethodReturnCheck')
     }
     reports {
-        xml.enabled = false
-        html.enabled = true
+        xml.required = false
+        html.required = true
     }
 }
 
