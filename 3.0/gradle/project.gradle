@@ -45,7 +45,7 @@ ext.gitignorePatterns = rootProject.file('.gitignore')
 
 
 allprojects {
-    buildDir = file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output')
+    layout.buildDirectory.set(file(System.env.OUTPUT_ROOT ? "${System.env.OUTPUT_ROOT}/${project.name}" : 'output'))
     ext.gitRepo = new File(scmVersion.repository.directory.get(), '.git')
     try {
         project.version = scmVersion.version
