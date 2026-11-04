@@ -214,6 +214,14 @@ tasks.withType(Pmd).configureEach {
         maxFailures = 14
     }
 }
+// https://github.com/pmd/pmd/issues/7056:
+// Add jrt-fs.jar of the toolchain explicitly on pmdAux classpath, to avoid
+// warning "Adding current platform ... to auxClasspath, which could be the wrong java version."
+dependencies {
+    pmdAux javaToolchains.launcherFor(java.toolchain)
+            .map { it.metadata.installationPath }
+            .map { it.files("lib/jrt-fs.jar")}
+}
 
 buildscript {
     dependencies {
